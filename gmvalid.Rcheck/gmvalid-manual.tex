@@ -1,0 +1,1413 @@
+\documentclass{article}
+\usepackage[latin1]{inputenc}\usepackage[ae,hyper]{Rd}
+\begin{document}
+\HeaderA{dp}{Death penalty example of Simpson's paradox}{dp}
+\keyword{datasets}{dp}
+\begin{Description}\relax
+Well known example to illustrate Simpson's paradox.
+The data set shows that ignoring victim's race lead to a different conclusion
+than including victim's race in the analysis.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}data(dp)\end{verbatim}
+\end{Usage}
+\begin{Format}\relax
+A data frame with 326 observations on the following 3 variables.
+\describe{
+\item[\code{Defendants.Race}] a factor with levels \code{white} and \code{black}
+\item[\code{Victims.Race}] a factor with levels \code{white} and \code{black}
+\item[\code{Death.Penalty}] a factor with levels \code{yes} and \code{no}
+}
+\end{Format}
+\begin{Source}\relax
+Radelet ML (1981) \emph{Racial characteristics and the imposition of the Death penalty.}
+American Sociological Review, 46(6):918-927.
+\end{Source}
+\begin{Examples}
+\begin{ExampleCode}
+data(dp)
+## Graphical model analysis shows that 'defendants' race' is 
+## independent from 'death penalty' given 'victims' race'.
+gm.analysis(dp,program="coco",recursive=TRUE)
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.analysis}{Analyze a data set}{gm.analysis}
+\keyword{multivariate}{gm.analysis}
+\keyword{nonparametric}{gm.analysis}
+\keyword{graphs}{gm.analysis}
+\keyword{hplot}{gm.analysis}
+\keyword{models}{gm.analysis}
+\begin{Description}\relax
+Graphical model selection by different selection strategies. 
+The selected graph is plotted where line thickness corresponds to an optional edge measure.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.analysis(data, edge.measure = c("gamma.cond", "marg.gamma", "cor", "boot",
+            "cov", "p.value"), program = c("mim", "coco"),
+            strategy = c("backwards", "forwards", "eh"), 
+            plot.significant = TRUE, boot.N = 100, ...)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] Data frame or a table (array) with at least 2 denominated variables. 
+\item[\code{edge.measure}] One of "gamma.cond", "marg.gamma", "cor", "boot", "cov", "p.value". To be plotted in the graph. May be abbreviated. See details. 
+\item[\code{program}] Selects whether MIM or the CoCo package is used for model selection. Calls either the function
+\code{\LinkA{gm.coco}{gm.coco}} or \code{\LinkA{gm.mim}{gm.mim}}. May be abbreviated. 
+\item[\code{strategy}] See \code{\LinkA{gm.coco}{gm.coco}} or \code{\LinkA{gm.mim}{gm.mim}}. 
+\item[\code{plot.significant}] If TRUE only significant edges in the selected models are plotted (in solid lines). If FALSE also not significant edges are plotted as dashed lines.
+
+\item[\code{boot.N}] Only required if \code{edge.measure} is "boot". Specifies the number of bootstrap replications. 
+\item[\code{...}] Further options of \code{\LinkA{gm.coco}{gm.coco}} or \code{\LinkA{gm.mim}{gm.mim}} can be given. 
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+Different edge measures:\\
+"gamma.cond" - Conditional gamma coefficient, calls \code{\LinkA{gm.gamma}{gm.gamma}} with type = conditional.\\
+"marg.gamma" - Marginal gamma coefficient, calls \code{\LinkA{gm.gamma}{gm.gamma}} with type = marginal.\\
+"cor" - Pearson's correlation coefficient, calls \code{\LinkA{cor}{cor}}.\\
+"boot" - calls \code{\LinkA{gm.boot.mim}{gm.boot.mim}} or \code{\LinkA{gm.boot.coco}{gm.boot.coco}} depending on the choice of \code{program}. \code{boot.N} bootstrap replications will be done. The relative edge frequency will be plotted next to it.\\
+"cov" - Pearson's covariance, calls \code{\LinkA{cov}{cov}}. \\
+"p.value" - is only available if \code{program} choice was "mim". Then \code{plot.significant} is set to TRUE since the p-value is only available for edges present in the model. In this case the edges will be plotted thinner the smaller the p-value.
+\end{Details}
+\begin{Value}
+A list containing:
+\begin{ldescription}
+\item[\code{"strategy"}] One of "backwards","forwards" and "eh". 
+\item[\code{"model" }] String vector of the accepted and plotted models. 
+\item[\code{"edge.measure" }] Character string indicating what type of edge measure was performed. 
+\item[\code{"analysis"}] Upper-tri matrix with the result of the edge measure values. 
+\item[\code{"variable names"}] Matrix that assigns a letter to each variable that is used in the model formulas. 
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+The option \code{boot} may take some time depending on the size of \code{boot.N}.
+\end{Note}
+\begin{Author}\relax
+Fabian Sobotka, Marc Suling, Ronja Foraita \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.plot}{gm.plot}}, \code{\LinkA{gm.coco}{gm.coco}}, \code{\LinkA{gm.mim}{gm.mim}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  data(wam)
+  gm.analysis(wam)
+  
+  ### showing various options in action
+  gm.analysis(wam,program="c",strategy="f",edge.measure="b",
+    boot.N=50,plot.significant=FALSE,recursive=TRUE,follow=TRUE,decomposable.mode=TRUE)
+              
+  gm.analysis(wam,edge.measure="p",options="u")
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.boot.coco}{Graphical model validation using the bootstrap (CoCo).}{gm.boot.coco}
+\keyword{nonparametric}{gm.boot.coco}
+\keyword{multivariate}{gm.boot.coco}
+\keyword{models}{gm.boot.coco}
+\begin{Description}\relax
+Validates a discrete undirected graphical model using the bootstrap.
+To achieve that the CoCo package is used.
+Relative frequencies of the bootstrapped models, cliques or edges are counted.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.boot.coco(N, data, strategy = c("backwards", "forwards", "eh"),
+            calculations = c("subgraph", "diff", "edge", "clique"),
+            model = FALSE, ...)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{N}] Number of bootstrap replications. 
+\item[\code{data}] Data frame or a table (array). Variables should have names, \code{data} has to be discrete. 
+\item[\code{strategy}] Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default (\code{\LinkA{backward}{backward}}).
+"forwards" adds significant edges, starting from the main effects model (\code{\LinkA{forward}{forward}}). The "Edwards-Havranek"
+model search rejects complete models in every step and finishes with one or more accepted models (\code{\LinkA{eh}{eh}}).
+The default strategy is "backwards". Selections may be abbreviated.
+
+\item[\code{calculations}] String vector specifying the analysis methods. "subgraph", "clique" and "edge" show the frequency of occurence 
+in all selected models of the bootstrap samples, while "diff" counts the differences
+in the bootstrap replications compared to the edges selected from the original data set.
+The frequency of the selected models of all bootstrap samples are always calculated. By default all calculations are done.
+Selections may be abbreviated.
+
+\item[\code{model}] Character string specifying a start model for "backwards" and "forwards" selection procedure.
+For "eh" a character string would specify the base model for tests.
+Since "eh" searches for models between a defined minimal and a maximal model, a string vector of length 2 is another option.
+In this case a minimal and a maximal model is to be given.
+The model formulae has to start with the first lowercase letters of the alphabet, e.g. "abc,cde". Variable names cannot be given.
+
+\item[\code{...}] Additional options to be given to the selection procedures. See \code{\LinkA{backward}{backward}} (forward) or \code{\LinkA{eh}{eh}}. 
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+This function uses a nonparametric bootstrap.\\
+For your information about the advancements of the bootstrap, some run numbers will be displayed.
+\end{Details}
+\begin{Value}
+A list containing:
+\begin{ldescription}
+\item[\code{"bootstrapped models" }] Relative frequency vector of selected models with model formulas as categories. 
+\item[\code{"bootstrapped subgraphs" }] Relative frequencies vector of subgraphs that equals cliques or parts of a clique.
+Returned if calculation "subgraph" is selected.
+
+\item[\code{"bootstrapped cliques" }] Relative frequency vector of selected cliques. Returned if calculation "clique" is selected.
+
+\item[\code{"bootstrapped edges"}] Matrix with relative frequencies of the edges. Returned if calculation "edge" is selected. 
+\item[\code{"original model"}] Character string giving the selected model using the original unsampled data. Returned if calculation "diff" is selected. 
+\item[\code{"differences from original data set"}] List with frequencies of more, less and different edges.
+Sorted by occurence.
+Returned if calculation "diff" is selected. 
+\item[\code{"variable names"}] Matrix that assigns a letter to each variable that is used in the model formulas. 
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+CoCo may crash R occasionally on a bad day. The R version of CoCo can only handle one CoCoObject.
+You may run "endCoCo()" if you use CoCo also outside this package or the function aborts.\\ 
+Running this function may take a while. A bootstrap with
+data of size 10.000 times 8 and 1.000 replications may take the computer about 2 minutes.
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+Efron B, Tibshirani RJ (1993) 
+\emph{An Introduction to the Bootstrap.}
+Chapman \& Hall
+
+Badsberg JH (2001) 
+\emph{A guide to CoCo.}
+Journal of Statistical Software, 6(4).
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.boot.mim}{gm.boot.mim}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  ### should provide good results because of simulated data
+  gm <- gm.modelsim(2000,"ABC,CDE")
+  gm.boot.coco(50,gm,recursive=TRUE)
+  
+  ### on real data sets a forward bootstrap seems to have better results
+  data(wynder)
+  gm.boot.coco(100,wynder,strategy="f",calculations=c("s","e"),decomposable.mode=TRUE)
+  
+  ### with a given model
+  data(wam)
+  gm.boot.coco(10,wam,model="ab,bcde,cdef")
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.boot.mim}{Graphical model validation using the bootstrap (MIM).}{gm.boot.mim}
+\keyword{nonparametric}{gm.boot.mim}
+\keyword{multivariate}{gm.boot.mim}
+\keyword{models}{gm.boot.mim}
+\begin{Description}\relax
+Validates a discrete undirected graphical model using the bootstrap.
+To achieve that the program MIM is used.
+Relative frequencies of the bootstrapped models, cliques or edges are counted.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.boot.mim(N, data, strategy = c("backwards", "forwards", "eh"),
+            calculations = c("subgraph", "diff", "edge", "clique"),
+            model = FALSE, options = "")
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{N}] Number of bootstrap replications. 
+\item[\code{data}] Data frame or a table (array). Variables should have names, \code{data} has to be discrete. 
+\item[\code{strategy}] Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default.
+"forwards" adds significant edges, starting from the main effects model. The "Edwards-Havranek"
+model search rejects complete models in every step and finishes with one or more accepted models.
+The default strategy is "backwards". Selections may be abbreviated.
+
+\item[\code{calculations}] String vector specifying the analysis methods. "subgraph", "clique" and "edge" show the frequency of occurence 
+in all selected models of the bootstrap samples, while "diff" counts the differences
+in the bootstrap replications compared to the edges selected from the original data set.
+The frequency of the selected models of all bootstrap samples are always calculated. By default all calculations are done.
+Selections may be abbreviated.
+
+\item[\code{model}] Character string specifying a start model for "backwards" and "forwards" selection procedure.
+For the "eh" procedure a minimal and a maximal model has to be assigned in one string
+connected with a " - " (see Example). The model formula has to start with the first lowercase letters of the alphabet, e.g. "abc,cde". Variable names cannot be given.
+
+\item[\code{options}] Optional character string specifying further options for the search strategy. Possible options can be found in the MIM help searching for
+"stepwise" (backwards, forwards) or "startsearch" (eh).  See \code{details}.
+
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+This function uses a nonparametric bootstrap.\\
+For your information about the advancements of the bootstrap, some run numbers will be displayed.
+
+MIM options for stepwise procedures (backwards, forwards):\\
+"A" - uses the AIC as selection criterion\\
+"B" - uses the BIC as selection criterion\\
+"J" - joggles between backward and forward\\
+"N" - non coherent mode\\
+"U" - unrestricted, allows for non-decomposable models;
+
+MIM options for the eh modelsearch:\\
+(positive number) - maximum number of models fitted\\
+white space\\
+(letters) - "U" for upward search, "D" for downward, default is both.
+\end{Details}
+\begin{Value}
+A list containing:
+\begin{ldescription}
+\item[\code{"bootstrapped models" }] Relative frequency vector of selected models with model formulas as categories. 
+\item[\code{"bootstrapped subgraphs" }] Relative frequencies vector of subgraphs that equals cliques or parts of a clique.
+Returned if calculation "subgraph" is selected.
+
+\item[\code{"bootstrapped cliques" }] Relative frequencies vector selected cliques. Returned if calculation "clique" is selected.
+
+\item[\code{"bootstrapped edges"}] Matrix with relative frequencies of the edges. Returned if calculation "edge" is selected. 
+\item[\code{"original model"}] Character string giving the selected model using the original unsampled data. Returned if calculation "diff" is selected. 
+\item[\code{"differences from original data set"}] List with frequencies of more, less and different edges (See argument \code{calculations}.
+Sorted by occurence.
+Returned if calculation "diff" is selected. 
+\item[\code{"variable names"}] Matrix that assigns a letter to each variable that is used in the model formulas. 
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+The function requires the MIM program.
+Make sure that it is running before using the function.\\ 
+The package mimR will only work properly if your temporary directory has a path
+where every folder has a name containing only 8 letters or less. mimR needs the Rgraphviz package. Therefore you will have to add "Bioconductor" to your R repositories.\\
+Running this function may take a while. A bootstrap with
+data of size 10.000 times 8 and 1.000 replications may take the computer about 4 minutes.
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+Efron B, Tibshirani RJ (1993) 
+\emph{An Introduction to the Bootstrap.}
+Chapman \& Hall
+
+Edwards D (2000) 
+\emph{An Introduction to Graphical Modelling.}
+Second Edition, Springer Verlag.
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.boot.coco}{gm.boot.coco}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  ### should provide good results because of simulated data
+  gm.a <- gm.modelsim(2000,"ABC,CDE")
+  gm.boot.mim(50,gm.a)
+  
+  ### on real data sets a forward bootstrap seems to have better results
+  data(wynder)
+  gm.boot.mim(100,wynder,strategy="f",calculations=c("s","e"),options="u")
+  
+  ### with model given
+  data(wam)
+  gm.boot.mim(10,wam,model="a,bcde,cdef")
+  
+  ### EH-strategy
+  gm.boot.mim(50,wam,strategy="eh",model="a,bc,de,f - abcde,bcdef")
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.coco}{Graphical model selection (CoCo)}{gm.coco}
+\keyword{models}{gm.coco}
+\keyword{multivariate}{gm.coco}
+\begin{Description}\relax
+Selects one or more graphical models (depending on strategy) using the CoCo package.
+Different types of model selection are available. A base model can be optionally defined.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.coco(data, strategy = c("backwards", "forwards", "eh"), model = FALSE, ...)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] Data frame or a table (array). Variables should have names, \code{data} has to be discrete. 
+\item[\code{strategy}] Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default (\code{\LinkA{backward}{backward}}).
+"forwards" adds significant edges, starting from the main effects model (\code{\LinkA{forward}{forward}}). The "Edwards-Havranek"
+model search rejects complete models in every step and finishes with one or more accepted models (\code{\LinkA{eh}{eh}}).
+The default strategy is "backwards". Selections may be abbreviated.
+
+\item[\code{model}] Character string specifying a start model for "backwards" and "forwards" selection procedure.
+For "eh" a character string would specify the base model for tests.
+Since "eh" searches for models between a defined minimal and a maximal model, a string vector of length 2 is another option.
+In this case a minimal and a maximal model is to be given.
+The model formulae has to start with the first lowercase letters of the alphabet, e.g. "abc,cde". Variable names cannot be given.
+
+\item[\code{...}] Additional options to be given to the selection procedures. See \code{\LinkA{backward}{backward}} (forward) or \code{\LinkA{eh}{eh}}. 
+\end{ldescription}
+\end{Arguments}
+\begin{Value}
+A list containing:
+\begin{ldescription}
+\item[\code{"accepted" }] String vector of the accepted model(s). 
+\item[\code{"rejected" }] String vector of the rejected model(s). 
+\item[\code{"base"}] Character string giving the base model the selection started with. 
+\item[\code{"strategy"}] Character string indicating what type of selection strategy was performed. 
+\item[\code{"tests"}] Matrix containing the test results of the accepted vs. the rejected models 
+(available if at least one of the models is submodel of another one).
+Otherwise the accepted and rejected models are tested against the saturated model. 
+\item[\code{"variable names"}] Matrix that assigns a letter to each variable used in the model formulas. 
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+CoCo may crash R occasionally on a bad day. We tried to prevent all crash causes for discrete data. The R version of CoCo can only handle one CoCoObject.
+You may run "endCoCo()" if you use CoCo also outside this package or the function aborts.
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+Badsberg JH (2001)
+\emph{A guide to CoCo.}
+Journal of Statistical Software, 6(4).
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.mim}{gm.mim}}, \code{\LinkA{backward}{backward}}, \code{\LinkA{eh}{eh}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  data(wam)
+  gm.coco(wam)
+  ### giving many options to the strategy
+  gm.coco(wam,recursive=TRUE,follow=TRUE,decomposable.mode=TRUE,
+            coherent=TRUE,IC=TRUE,BIC=TRUE)
+  
+  ### giving base
+  gm.coco(wam,strategy="e",model=c("ab,cd","ae,be"))
+  gm.coco(wam,strategy="f",model="abc,cd,de,f")
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.csi}{Conditional Synergy Index}{gm.csi}
+\keyword{htest}{gm.csi}
+\begin{Description}\relax
+Computes the conditional synergy index of two dichotomous variables in relation to 
+a binary group variable on the penetrance scale.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.csi(X, Y, group, data=0, reference=c(1,1,2), pen = NULL, conf.level = 0.95)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{X}] Index of the variable's position in \code{data} or a vector. 
+\item[\code{Y}] Index of the variable's position in \code{data} or a vector. 
+\item[\code{group}] Binary group or outcome variable addressed as variable index in 
+\code{data} or as vector. By default, 2 is the reference category.
+\item[\code{data}] Data frame or table. 
+\item[\code{reference}] Vector to define the \code{reference} categories of \code{X}, \code{Y} and \code{group}. 
+By default, 2 is the reference category for group.
+\item[\code{pen}] If FALSE the penetrance P( group | X,Y ) is estimated from the data. 
+\item[\code{conf.level}] Confidence level of the interval (default is 0.95). 
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+Foraita's conditional synergy index (CSI) is an interaction measure on the penetrance scale
+between two dichotomous variables on a  binary outcome. 
+The index equals 1 under additivity, CSI > 1 in the case of antagonism and 
+CSI < 1 in the presence of synergy.
+
+The confidence intervals are calculated using an asymptotic variance given in Foraita (2007).
+\end{Details}
+\begin{Value}
+A list containing:
+\begin{ldescription}
+\item[\code{penetrance.ratio}] a penetrance ratio table of P( group=reference | X,Y ) / P( group=NOT reference| X,Y ) 
+\item[\code{measure}] a matrix containing the estimate, standard deviation, 
+confidence interval and p-value. Figures in brackets show the
+reference category respectively the category under consideration.
+\end{ldescription}
+\end{Value}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+Foraita R (2007)
+\emph{A conditional synergy index to assess biological interaction.}
+Working Paper. Please send an e-mail to \email{foraita@bips.uni-bremen.de}.
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.si}{gm.si}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  data(idd35)
+  gm.csi(1,2,3,data=idd35)
+
+  ### >> constructing an additive and multiplicative penetrance
+  x <- c(0.1,0.4)
+  y <- c(0.05,0.5)
+  add.pen <- outer(x,y,FUN="+")
+  mult.pen <- outer(x,y)
+  het.pen <- outer(x,y,FUN="+") - outer(x,y)
+
+  ### >> Function that samples data using the penetrance 
+  make.data <- function(R,pen,category) 
+    {
+      s.vec <- sample(c(1,2,3,4),R,replace=TRUE,prob=as.vector(pen))
+      fact.1 <- fact.2 <- vector()
+      for( i in 1:R ) {
+        ifelse( s.vec[i] == 1 || s.vec[i] == 3 , fact.1[i] <- 1, fact.1[i] <- 2 ) 
+        ifelse( s.vec[i] == 1 || s.vec[i] == 2 , fact.2[i] <- 1, fact.2[i] <- 2 ) 
+      }
+      cbind(X=fact.1,Y=fact.2,group=rep(category,R))  
+    }
+
+  ### >>> Building datasets with affected and unaffected subjects   
+  add.aff <- make.data(200,add.pen,2)
+  add.uaf <- make.data(200,1-add.pen,1)  
+  add.df <- as.data.frame(rbind(add.uaf,add.aff))
+  
+  mult.aff <- make.data(200,mult.pen,2)
+  mult.uaf <- make.data(200,1-mult.pen,1)  
+  mult.df <- as.data.frame(rbind(mult.uaf,mult.aff))
+  
+  het.aff <- make.data(200,het.pen,2)
+  het.uaf <- make.data(200,1-het.pen,1)  
+  het.df <- as.data.frame(rbind(het.uaf,het.aff))
+   
+  gm.csi(1,2,3,add.df,pen=add.pen)   # Additivity
+  gm.csi(1,2,3,mult.df,pen=mult.pen) # Synergy
+  gm.csi(1,2,3,het.df,pen=het.pen)   # Antagonism
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.cv}{Cross Validation for Graphical (Chain) Models}{gm.cv}
+\keyword{models}{gm.cv}
+\keyword{regression}{gm.cv}
+\begin{Description}\relax
+Predicts a binary outcome variable in a given graphical (chain) model
+using k-fold cross validation.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.cv(k, data, outcome=1, strategy = c("backwards", "forwards"),
+        chain = FALSE, options="", conf.level = 0.95)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{k}] Number of folds the data should be split into in order to estimate the success of prediction in the cross validation. 
+\item[\code{data}] Data frame or a table (array). Variables should have names, \code{data} has to be discrete. 
+\item[\code{outcome}] Variable index of the outcome variable. Default is 1.
+\item[\code{strategy}] Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default.
+"forwards" adds significant edges, starting from the main effects model. 
+The default strategy is "backwards". Selections may be abbreviated.
+
+\item[\code{chain}] Character string to specify the block structure of directed graphical models.
+The syntax is "vs1|vs2|vs3" where vs1,vs2,vs3 are sets of variables and the variables in vs1 are prior to those in vs2 etc. Otherwise the model will be undirected. 
+Only lowercase letters are allowed!
+\item[\code{options}] Character string specifying further options for the search strategy. Possible options can be found in the MIM help when searching for
+"stepwise" (backwards, forwards) or "startsearch" (eh).  See \code{details}.
+
+\item[\code{conf.level}] Confidence level of the interval (default is 0.95). 
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+Outcome variable must be the first in \code{data}, categorized as 
+1="unaffected" and 2="affected".
+
+The procedure is as follows
+
+1. Data Processing:\\
+The data set is splitted into k folds
+
+2. Model Selection:\\
+A model is selected using the observations from k - j-th folds, j=1,...,k.
+P-values of edges are stored. 
+
+3. Calculate Risk:\\
+A ratio table of being affected rather than unaffected is calulated for the joint probability of all influences associated with the outcome variable.
+This is done for every fold.\\    
+If the ratio is greater or equal to one, the risk is set to 2, otherwise it is set to 1. For each fold a risk table is generated.
+
+4. Prediction:\\
+The risk table from step(3), corresponding to the k-j-th fold, is used to predict the observations in the j-th fold.
+The prediction "PRED" is compared to the real outcome "OUT" in each fold by calculating the success probability using the following formula:
+
+success.prob = 1/n ( 1 - SUM(1:n)|OUT - PRED|),\\
+n = number of oberservations in the j-th fold \\
+
+MIM options for stepwise procedures (backwards, forwards):\\
+"A" - uses the AIC as selection criterion\\
+"B" - uses the BIC as selection criterion\\
+"J" - joggles between backward and forward\\
+"N" - non coherent mode\\
+"U" - unrestricted, allows for non-decomposable models;
+\end{Details}
+\begin{Value}
+A list containing:
+\begin{ldescription}
+\item[\code{ pvalue }] Matrix of the calculated p-values in each fold for each edge obtained by the model selection. 
+NA's mark missing edges. 
+\item[\code{ ratio }] List of ratio tables (see details, step (3)). 
+\item[\code{ risk }] List of risk tables (see details, step (3)). 
+\item[\code{ success }] Matrix with the best prediction models in each fold, the number of edges that point
+to the outcome variable and the probability of successful prediction (see details, step (4)). 
+The initial blockstructure in the prediction step is: "variable set of influences | outcome variable".   
+A given \code{chain} is only used during the model selection step.                   
+The success probability is calculated using those clique structures the outcome variable is involved in.
+
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+The function requires the MIM program.
+Make sure that it is running before using the function.
+mimR will only work properly if your temporary directory has a path
+where every folder has a name containing only 8 letters or less. mimR needs the Rgraphviz package.
+Therefore you will have to add "Bioconductor" to your R repositories.
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+Foraita R (2008) 
+\emph{Outcome prediction in graphical (chain) models using cross validation.}
+Slides. Please contact \email{foraita@bips.uni-bremen.de}.
+
+Edwards D (2000) 
+\emph{An Introduction to Graphical Modelling.}
+Second Edition, Springer Verlag.
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.mim}{gm.mim}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  
+  ABC <- gm.modelsim(500,"ABC,CD")
+  out <- gm.cv(5,data=ABC, strategy="f")
+  out
+  
+  ### DAG using a stepwise selection
+  out.dag <- gm.cv(3,data=ABC,option="j",chain="d|b|c|a")  
+  
+  ### Chain graph using BIC as selection criteria and allowing for 
+  ### non-decomposable models
+  cg <- gm.modelsim(1000,"ABD,BCE")  
+  out.cg <- gm.cv(3,data=cg,option="bu",chain="cb|de|a")
+  
+  ## Not run: 
+gm.cv(3,data=ABC,chain="DBD|A") # you have to use lowercase letters
+            gm.cv(3,data=ABC,chain="dca|b") # a is supposed to be outcome variable 
+                                  # and thus have to be in the very right block    
+            
+## End(Not run)
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.gamma}{Conditional Gamma coefficient estimation and confidence intervals}{gm.gamma}
+\keyword{htest}{gm.gamma}
+\begin{Description}\relax
+Calculates conditional gamma coefficients of two binary or ordinal variables X and Y given a 
+set of variables \{A,B,...\}.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+  gm.gamma(X = 0, Y = 0, data = 0, conditions = 0,
+        type = c("conditional", "single", "marginal"), conf.level = 0.95)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{X}] Index of the variable's position in \code{data} or a vector. 
+\item[\code{Y}] Index of the variable's position in \code{data} or a vector. 
+\item[\code{data}] Data frame or table 
+\item[\code{conditions}] Variable indices in \code{data} or a data frame of the conditioning variables. 
+\item[\code{type}] Character string specifying the method,
+must be one of "conditional" (default), "single" or "marginal". 
+May be abbreviated. 
+\item[\code{conf.level}] Confidence level of the interval (default is 0.95). 
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+The gamma coefficient is a correlation measure between two
+binary or ordinal variables. It ranges between -1 and 1, where -1 or respectively
++1 stands for a purely negative or positive monotone relation. The relation has
+not to be of linear nature!
+
+If \code{type} = "conditional", the conditional gamma coefficients are calculated and
+if \code{type} = "marginal", the marginal gamma coefficients are computed. \\
+If \code{X} and \code{Y} are given, the "single" gamma coefficient between both
+variables are computed.\\
+If \code{X} or \code{Y} are zero, the function computes all possible conditional gamma coefficients.
+
+Confidence intervals are calculated using the asymptotic variance given in Olszak and Ritschard (1995).
+\end{Details}
+\begin{Value}
+A matrix containing the gamma estimate(s), standard deviation(s), confidence interval(s) and p-value(s).
+\end{Value}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+Davis JA (1967) 
+\emph{A partial coefficient for Goodman and Kruskal's gamma.}
+Journal of the American Statistical Association, 62:189-193.
+
+Olszak M, Ritschard G (1995) 
+\emph{The behaviour of nominal and ordinal partial association measures.}
+The Statistician, 44(2):195-212.
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.or}{gm.or}}, \code{\LinkA{gm.rr}{gm.rr}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  data(dp)
+
+  ### Conditional Gamma by victime
+  gm.gamma(1,3,conditions=2,data=dp)
+  ### the same
+  gm.gamma(dp$Defendants.Race,dp$Death.Penalty,data=dp,conditions=dp$Victims.Race)
+  
+  ### Stratified Gamma
+  dp.black <- data.frame(victime=dp$Victims.Race[dp$Victims.Race=="black"],
+                        killer=dp$Defendants.Race[dp$Victims.Race=="black"],
+                        death.penalty=dp$Death.Penalty[dp$Victims.Race=="black"])
+  dp.white <- data.frame(victime=dp$Victims.Race[dp$Victims.Race=="white"],
+                        killer=dp$Defendants.Race[dp$Victims.Race=="white"],
+                        death.penalty=dp$Death.Penalty[dp$Victims.Race=="white"])  
+  table(dp.black[,c(2,3,1)])
+  table(dp.white[,c(2,3,1)])  
+
+  gm.gamma(2,3,data=dp.black)  
+  gm.gamma(2,3,data=dp.white)  
+  
+  ### Marginal Gamma
+  gm.gamma(1,3,data=dp)
+
+  ### Analyse complete data set
+  gm.gamma(data=dp,type="m")
+  
+  ### Plot model
+  gamma <- gm.gamma(data=dp)
+   #> all edges
+  mat <- matrix(NA,nrow=3,ncol=3)
+  mat[upper.tri(mat)] <- gamma[,1]
+  gm.plot(model="abc",data.analysis=mat)
+   #> only significant edges
+  mat <- matrix(NA,nrow=3,ncol=3)   
+  tmp <- vector()
+  for( i in 1:dim(gamma)[1] ) ifelse(gamma[i,5]<0.05, tmp[i] <- gamma[i,1], tmp[i] <-NA)
+  mat[upper.tri(mat)] <- tmp
+  gm.plot(model="ab,bc",data.analysis=mat)
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.generate}{Random data frames of binary variables with given marginals}{gm.generate}
+\keyword{datagen}{gm.generate}
+\keyword{distribution}{gm.generate}
+\begin{Description}\relax
+Generates a random data frame of independent binary variables with given marginals.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.generate(N, p = c(0.5, 0.5, 0.5))
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{N}] Number of observations, sample size. 
+\item[\code{p}] Probability vector. Each element assigns the probability to draw a "2". The user-defined number of
+elements determines the number of variables in the resulting data frame. 
+\end{ldescription}
+\end{Arguments}
+\begin{Value}
+A data frame with number of rows equal to \code{N} and number of columns equal to the length of \code{p}.
+\end{Value}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.modelsim}{gm.modelsim}}, \code{\LinkA{gm.sim.ixj}{gm.sim.ixj}}, \code{\LinkA{r2dtable}{r2dtable}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+gm.generate(10,c(.5,.2,.2))
+gm.generate(15,c(.5,.5,.5,.5,.5,.5))
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.mim}{Graphical model selection (MIM)}{gm.mim}
+\keyword{models}{gm.mim}
+\keyword{multivariate}{gm.mim}
+\begin{Description}\relax
+Selects one or more graphical models (depending on strategy) using the program MIM.
+Different types of model selection are available. A base model can be optionally defined.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.mim(data, strategy = c("backwards", "forwards", "eh"),
+        model = FALSE, chain = FALSE, options = "")
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] Data frame or a table (array). Variables should have names. \code{data} has to be discrete. 
+\item[\code{strategy}] Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default.
+"forwards" adds significant edges, starting from the main effects model. The "Edwards-Havranek"
+model search rejects complete models in every step and finishes with one or more accepted models.
+The default strategy is "backwards". Selections may be abbreviated.
+
+\item[\code{model}] Character string specifying a start model for "backwards" and "forwards" selection procedure.
+For the "eh" procedure a minimal and a maximal model has to be assigned in one string
+connected with a " - " (see Example). The model formulae has to start with the first lowercase letters of the alphabet, e.g. "abc,cde".
+Variable names cannot be given.
+
+\item[\code{chain}] Character string to specify the block structure of directed graphical models.
+The syntax is "vs1|vs2|vs3" where vs1,vs2,vs3 are sets of variables and the variables in vs1 are prior to those in vs2 etc.
+The formula has to be given with the first lowercase letters of the alphabet, e.g. "a|bc|d". Variable names cannot be given.
+For more information search the MIM help for "block overview".
+
+\item[\code{options}] Character string specifying further options for the search strategy. Possible options can be found in the MIM help when searching for
+"stepwise" (backwards, forwards) or "startsearch" (eh).  See \code{details}.
+
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+MIM options for stepwise procedures (backwards, forwards):\\
+"A" - uses the AIC as selection criterion\\
+"B" - uses the BIC as selection criterion\\
+"J" - joggles between backward and forward\\
+"N" - non coherent mode\\
+"U" - unrestricted, allows for non-decomposable models;
+
+MIM options for the eh modelsearch:\\
+(positive number) - maximum number of models fitted\\
+white space\\
+(letters) - "U" for upward search, "D" for downward, default is both.
+\end{Details}
+\begin{Value}
+A list containing:
+\begin{ldescription}
+\item[\code{"accepted" }] String vector of the accepted model(s). 
+\item[\code{"rejected" }] String vector of the rejected model(s). 
+\item[\code{"base"}] Character string with the base model the selection started with. NA for "eh". 
+\item[\code{"strategy"}] Character string indicating what type of selection strategy was performed. 
+\item[\code{"tests against saturated"}] Matrix giving the test results of the accepted and the rejected models against the saturated model.
+
+\item[\code{"p values"}] Upper-tri matrix with p-values of those edges in the accepted models. NA if edge is misseing. 
+\item[\code{"variable names"}] Matrix that assigns a letter to each variable that is used in the model formulas. 
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+The function requires the MIM program.
+Make sure that it is running before using the function. The package mimR will only work properly if your temporary directory has a path
+where every folder has a name containing only 8 letters or less. mimR needs the Rgraphviz package.
+Therefore you will have to add "Bioconductor" to your R repositories.
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+Edwards D (2000) 
+\emph{An Introduction to Graphical Modelling.}
+Second Edition, Springer Verlag.
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.coco}{gm.coco}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  data(wam)
+  gm.mim(wam)
+  ### giving strategy
+  gm.mim(wam,strategy="e")
+  
+  ### giving minimal and maximal model
+  gm.mim(wam,strategy="e",model="a,bc,de,f - abcd,cdef")
+  ### giving block structure
+  gm.mim(wam,strategy="f",model="a,b,c|abc,de|abcd,ef",chain="abc|de|f",options="BNU")
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.modelsim}{Random data frames with given dependence model and marginals}{gm.modelsim}
+\keyword{datagen}{gm.modelsim}
+\keyword{graphs}{gm.modelsim}
+\begin{Description}\relax
+Generates a random data frame of discrete variables with a given dependence model and marginals.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+    gm.modelsim(N, model, categories = 0)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{N}] Number of observations, sample size. 
+\item[\code{model}] A character string assigning a dependence model expressed as clique structure. Each variable
+has to be expressed as a letter, e.g. "ABC,CDE".
+
+\item[\code{categories}] a list of weight vectors that assigns the weight of each catogory.
+Number of list elements must equal the number of variables in \code{model}.
+Default is "list(c(.5,.5),c(.5,.5),...)".
+
+\end{ldescription}
+\end{Arguments}
+\begin{Value}
+A data frame with number of rows approximately equal to \code{N} and number of columns equal
+to the number of variables used in \code{model}.
+\end{Value}
+\begin{Note}\relax
+Observed marginal probabilities reflect the given marginal probabilites only approximatively.
+Works best with population sizes over N=10,000.
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.generate}{gm.generate}}, \code{\LinkA{gm.sim.ixj}{gm.sim.ixj}}, \code{\LinkA{r2dtable}{r2dtable}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+    gm.modelsim(100,"AB,AC")
+    table( gm.modelsim(100,"a,b,c") )
+    
+    tmp.df <- gm.modelsim(10000,"abf,cd,cf,bdeg,bfg")
+    
+    # with given number of categories
+    tmp.df <- gm.modelsim(1000,"AB,C",list(c(1,1,1),c(1,1),c(1,1,1)))
+
+    # with given number of categories and marginals
+    tmp.df <- gm.modelsim(1000,"ABC",list(c(0.3,0.3,0.4),c(0.6,.4),c(0.25,0.25,0.5)))
+    table(tmp.df)
+
+    ## Not run: 
+tmp.df <- gm.modelsim(100,"ABC",list(3,2,3))# (number of categories will be 2 x 2 x 2 )
+            gm.modelsim(100,"123")
+            
+## End(Not run)
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.or, gm.rr}{Stratified odds ratios or risk ratios}{gm.or, gm.rr}
+\aliasA{gm.or}{gm.or, gm.rr}{gm.or}
+\aliasA{gm.rr}{gm.or, gm.rr}{gm.rr}
+\keyword{htest}{gm.or, gm.rr}
+\begin{Description}\relax
+Computes (stratified) odds ratios or risk ratios and their asymptotic confidence interval.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.or(X, Y, data = 0, conditions = 0,
+        reference = c("last", "biggest", "first"), conf.level = 0.95)
+
+gm.rr(X, Y, data = 0, conditions = 0,
+        reference = c("last", "biggest", "first"), conf.level = 0.95)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{X}] Index of the variable's position in \code{data} or a vector. 
+\item[\code{Y}] Index of the variable's position in \code{data} or a vector. 
+\item[\code{data}] Data frame or a table 
+\item[\code{conditions}] Variable indices in \code{data} or a data frame of the conditioning variables. 
+\item[\code{reference}] Character string specifying the reference category, 
+must be one of "last" (default), "biggest" (largest) or "first". 
+May be abbreviated. 
+\item[\code{conf.level}] confidence level of the interval (default is 0.95). 
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+Calculates odds ratios by conditional maximum likelihood estimation (Fisher) for stratified odds ratios and
+odds ratios by unconditional maximum likelihood estimation (Wald) for marginal odds ratios. 
+Confidence intervals are calculated using exact methods.
+
+Calculates risk ratios by unconditional maximum likelihood estimation (Wald). 
+Confidence intervals are calculated using normal approximation.
+
+Is based on the functions \code{oddsratio.fisher}, \code{oddsratio.wald} and \code{riskratio.wald} (package: epitools).
+\end{Details}
+\begin{Value}
+A matrix containing the estimate(s), confidence interval(s) and p-value(s).
+\end{Value}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+Rothman KJ, Greenland S (1998) 
+\emph{Modern Epidemiology.} (2nd)
+Lippincott-Raven Publisher
+
+\url{http://www.epitools.net}
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{oddsratio}{oddsratio}}, \code{\LinkA{riskratio}{riskratio}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  group  <- c("treatment","placebo1","placebo2")
+  target <- c("low","medium","high")
+  mat    <- matrix(c(78,35,53,77,10,89,16,119,32),nrow=3,ncol=3,byrow=TRUE, 
+                    dimnames=list("group"=group,"target"=target))
+  treat  <- data.frame(expand.table(mat))
+  table(treat)
+  
+  ### Marginal OR
+  gm.or(1,2,treat,reference="f")
+  gm.or(treat$target,treat$group)
+  
+  ### Stratified OR
+  data <- gm.modelsim(1000,"ab,bcd",list(c(1,1),c(1,1),c(1,1),c(1,1)))  
+  gm.or(1,2,conditions=c(3,4),data=data)
+  
+  ### Marginal RR
+  gm.rr(1,2,treat,reference="f")
+  gm.rr(treat$target,treat$group)
+  
+  ### Stratified RR
+  data <- gm.modelsim(1000,"ab,bcd",list(c(1,1),c(1,1),c(1,1),c(1,1)))  
+  gm.rr(1,2,conditions=c(3,4),data=data)
+  
+  ### ALSO
+  gm.or(X=data$a,Y=data$b,conditions=data$d)
+
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.plot}{Plot graphical models}{gm.plot}
+\keyword{hplot}{gm.plot}
+\keyword{graphs}{gm.plot}
+\begin{Description}\relax
+Plots given graphical models and writes provided measures next to the edges.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.plot(model, significant = TRUE, data.analysis = 0)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{model}] String vector with model formulas. See \code{\LinkA{gm.modelsim}{gm.modelsim}}. 
+\item[\code{significant}] If TRUE only significant edges in the selected models are plotted (in solid lines). If FALSE also not significant edges are plotted as dashed lines.
+
+\item[\code{data.analysis}] Upper-tri matrix with the measure for the edge between variables i and j (i>j) at matrix position [i,j]. If the length of the \code{model} is bigger than 1, \code{data.analysis} has to be a list of matrices. 
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+The line width of the edges will depend on the size of the numbers in \code{data.analysis}.
+\end{Details}
+\begin{Value}
+TRUE
+\end{Value}
+\begin{Note}\relax
+Every use of the plot function opens a new window.
+\end{Note}
+\begin{Author}\relax
+Fabian Sobotka, Marc Suling, Ronja Foraita \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.analysis}{gm.analysis}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  gm.plot("ABC,CDE")
+
+  gm.plot("VBA,EVC")
+  
+  gm.plot(c("ABC,CDE","AB,BC,CD,DE","ABC,DEF,GHI"))
+  
+  gm.plot("AB,AC",FALSE,matrix(0.5,nrow=3,ncol=3))
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.si}{Synergy Index}{gm.si}
+\keyword{htest}{gm.si}
+\begin{Description}\relax
+Computes the synergy index of two discrete variables in relation to 
+a binary group variable.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.si(X,Y,group,data=0,reference=c(1,1,2),conf.level = 0.95)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{X}] Index of the variable's position in \code{data} or a vector. 
+\item[\code{Y}] Index of the variable's position in \code{data} or a vector. 
+\item[\code{group}] Binary group or outcome variable addressed as variable index in 
+\code{data} or as vector.
+\item[\code{data}] Data frame or table. 
+\item[\code{reference}] Vector to define the \code{reference} categories of \code{X}, \code{Y} and \code{group}.
+By default, 2 is the reference category for group.
+\item[\code{conf.level}] Confidence level of the interval (default is 0.95). 
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+Rothman's synergy index (S) is an interaction measure between two
+discrete variables on a dichotomous outcome. 
+The index equals 1 under additivity, S > 1 in the case of synergy and 
+S < 1 in the presence of antagonism.
+
+The synergy index is originally constructed on (2 x 2)-tables, but (i x j)-tables can
+also be analyzed. Then (i-1) x (j-1) synergy indices are computed and combined to 
+an overall synergy index.    
+
+The confidence intervalls are calculated using the asymptotic variance given in 
+Rothman (1974).
+\end{Details}
+\begin{Value}
+A list containing:
+\begin{ldescription}
+\item[\code{ratio }] A rate ratio table, more precise [P( group=reference,X,Y ) / P( group=NOT reference,X,Y )] / [min(P( group=reference,X,Y ) / P( group=NOT reference,X,Y ))] 
+\item[\code{covariance}] Covariances matrix of the single synergy indices. 
+Not written if \code{X} or \code{Y} are binary.
+\item[\code{measure }] Matrix containing the estimate(s), standard deviation(s), 
+confidence interval(s) and p-value(s). Figures in brackets show the
+reference category respectively the category under consideration.\\                 
+If both factors \code{X} and \code{Y} are binary, confidence 
+intervals for case-control as well as cohort designs are computed.
+If at least one factor has more than 2 categories, the overall synergy index
+with its corresponding confidence interval is computed that follows a 
+case-control design.
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+It can occur that certain combinations of categories lead to a negative synergy indices.
+In that case no confidence intervals can be computed. If so, use the \code{reference} option
+to re-order the categories of the variable(s) in question (see example below).
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+Rothman K (1974) 
+\emph{The estimation of synergy or antagonism.}
+American Journal of Epidemiology, 103(5):506-511
+
+Rothman K (1986) 
+\emph{Modern Epidemiology.}
+Little, Brown and Company, Boston/Toronto.
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.csi}{gm.csi}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  data(wynder)
+  gm.si(1,2,3,wynder)
+
+  # Smoking and alcohol in relation to oral cancer among male veterans under age 60.
+  # (from "Modern Epidemiology")
+  oral <- array(c(20,3,18,8,12,6,166,225),dim=c(2,2,2), 
+            dimnames=list(Group=c("control","cases"),
+            Smoker=c("no","yes"),Alcohol=c("no","yes")))
+  oral.df <- expand.table(oral)
+  # grouping variable is first in data frame
+  gm.si(2,3,1,oral.df)
+  
+  # Effects must be ascending in respect to the reference category
+  show.effect <- array(c(1,7,2,7,7,12,106,48),dim=c(2,2,2),
+                        dimnames=list(A=1:2,B=1:2,C=1:2))
+  # produces NaN
+  gm.si(1,2,3,expand.table(show.effect))
+  # > re-ordering variable B helps
+  gm.si(1,2,3,expand.table(show.effect),reference=c(1,2,2))
+
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{gm.sim.ixj}{Random (i x j)-way dependency tables with given marginals}{gm.sim.ixj}
+\keyword{datagen}{gm.sim.ixj}
+\begin{Description}\relax
+Generates random (i x j)-way dependency tables with given marginals.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.sim.ixj(N, pa, pb)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{N}] Number of observations; sample size. 
+\item[\code{pa}] Weight vector of length i to assign the distribution of the row totals. 
+\item[\code{pb}] Weight vector of length j to assign the distribution of the column totals. 
+\end{ldescription}
+\end{Arguments}
+\begin{Value}
+A (i x j)-matrix.
+\end{Value}
+\begin{Note}\relax
+Observed totals that were generated according to the shorter weight vector 
+reflect the given weights only approximatively.
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.generate}{gm.generate}}, \code{\LinkA{gm.modelsim}{gm.modelsim}}, \code{\LinkA{r2dtable}{r2dtable}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+    gm.sim.ixj(1000,c(1,1,1),c(1,1,1,1,1))
+    gm.sim.ixj(1000,c(.2,.3,.4,.1),c(.5,.2,.3)) 
+    
+    round(gm.sim.ixj(30,c(1,1),c(1,1)))       
+    
+    tab <- round(gm.sim.ixj(500,c(.5,.5),c(.5,.5)))
+    chisq.test(tab)   
+\end{ExampleCode}
+\end{Examples}
+
+\inputencoding{latin1}
+\HeaderA{gmvalid-package}{Validation of graphical models}{gmvalid.Rdash.package}
+\aliasA{gmvalid}{gmvalid-package}{gmvalid}
+\keyword{datagen}{gmvalid-package}
+\keyword{models}{gmvalid-package}
+\keyword{multivariate}{gmvalid-package}
+\keyword{nonparametric}{gmvalid-package}
+\keyword{graphs}{gmvalid-package}
+\keyword{htest}{gmvalid-package}
+\begin{Description}\relax
+This package provides functions among others that can be used to analyse
+graphical models. This includes e.g. the possibility
+to simulate data sets given a dependence model,
+to analyze discrete graphical models utilizing the MIM program or the CoCo package
+and to quantify associations or interactions.
+
+Furthermore, a selected graphical model can be validated using the bootstrap and
+the best prediction model can be evaluated for a dichotomous outcome variable and several discrete influences
+using cross validation.
+\end{Description}
+\begin{Details}\relax
+\Tabular{ll}{
+Package: & gmvalid\\
+Type: & Package\\
+Version: & 1.0\\
+Date: & 2007-11-07\\
+License: & GPL (>=2) \\
+}
+
+\item This package requires the packages mimR and CoCo as well as the software MIM that can be downloaded at \url{http://www.hypergraph.dk}.
+\item The mimR package itself requires the package Rgraphviz that is found in the Bioconductor repository.
+\item Further the packages grid, epitools and gtools are required.
+\item Before using any functions that use MIM make sure that the program is runnning.
+\item The package mimR will only work properly if your Windows temporary directory has a path
+where every folder has a name containing only 8 letters or less.
+\item For mimR requirements we refer to the package's help page \code{\LinkA{mimR}{mimR}}.
+\item If CoCo calculations fail, please type "endCoCo()" to remove temporary files. 
+\item CoCo crashes occasionally. If you have recurring problems with a specific data set, we suggest to use the MIM-option. Otherwise reboot the Computer.
+\item Model formulas have to be specified according to MIM model formulas or respectively CoCo model formulas.
+\end{Details}
+\begin{Note}\relax
+This work has been supported by the German Research Foundation\\
+(DFG: \url{http://www.dfg.de})
+under grant scheme PI 345/2-1.
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+> MIM (\url{http://www.hypergraph.dk/}) \\
+Edwards D (2002) 
+\emph{An Introduction to Graphical Modelling.}
+Springer
+
+> mimR (\url{http://genetics.agrsci.dk/~sorenh/mimR/index.html})\\
+Højsgaard S (2004) 
+\emph{The mimR package for graphical modelling in R.}
+Journal of Statistical Software, 11(6).
+
+> CoCo (\url{http://www.badsberg.eu})\\
+Badsberg JH (2001) 
+\emph{A guide to CoCo.}
+Journal of Statistical Software, 6(4).
+
+> CSI \\
+Foraita R (2007) 
+\emph{A conditional synergy index to assess biological interaction.}
+Working Paper. Please send an e-mail to \email{foraita@bips.uni-bremen.de}.
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{mimR}{mimR}},  \code{\LinkA{CoCo}{CoCo}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+    ### Generates a data frame given a dependence model
+    gm.a <- gm.modelsim(1000,"ABC,CDE")
+    
+    ### Modelselection with graphical output
+    gm.analysis(gm.a)   
+    
+    ### Model validation using the bootstrap 
+    gm.boot.coco(100,gm.a,recursive=TRUE,follow=TRUE)
+
+    ### Model prediction using cross validation
+    gm.cv(3,data=gm.a,strategy="f",options="b")
+    
+    ### Testing interaction on the penetrance scale
+    ### using the conditional synergy index (CSI)
+    gm.csi(1,2,3,data=gm.a)
+
+    ### Testing interaction on a additivity scale
+    ### using the synergy index (S)
+    gm.si(1,2,3,data=gm.a)   
+
+    ### Gamma Coefficient B indpendent D given C
+    gm.gamma(2,4,data=gm.a,conditions=3)
+
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{idd35}{Type 1 Diabetes susceptibility loci Idd3 and Idd5}{idd35}
+\keyword{datasets}{idd35}
+\begin{Description}\relax
+Loci Idd3 and Idd5 are suspectable to be associated with type 1 diabetes.
+This data reflects an animal experiment from Hill et al. (2000).
+\end{Description}
+\begin{Usage}
+\begin{verbatim}data(idd35)\end{verbatim}
+\end{Usage}
+\begin{Format}\relax
+A data frame with 313 observations on the following 3 variables.
+\describe{
+\item[\code{idd3}] a factor with levels \code{NN} and \code{BB}
+\item[\code{idd5}] a factor with levels \code{NN} and \code{BB}
+\item[\code{group}] a factor with levels \code{controls} \code{cases}
+}
+\end{Format}
+\begin{Details}\relax
+Data was used from Cordell et al. (2001) to model the joint effect of alleles at
+the loci Idd3 and Idd5 on the outcome "type 1 diabetes". Only homozygeous genotypes 
+were available.
+\end{Details}
+\begin{Source}\relax
+Hill NJ, Lyons PA, Armitage N, Todd JA, Wicker LS and Peterson LB (2000)
+\emph{NOD Idd5 locus controls insulitis and diabetes and overlaps the 
+orthologous CTLA4/IDDM12 and NRAMP1 loci in humans.}
+Diabetes, 49:1744-1747.
+\end{Source}
+\begin{References}\relax
+Cordell HJ, Todd JA, Hill NJ, Lord CJ, Lyons PA, Peterson LB, Wicker LS and Clayton DG (2001)
+\emph{Statistical modeling of interlocus interactions in a complex disease: Rejection
+of the multiplicative model of epistasis in type 1 diabetes.}
+Genetics, 158:357-367.
+\end{References}
+\begin{Examples}
+\begin{ExampleCode}
+  data(idd35)
+  table(idd35)
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{wam}{Women and Mathematics}{wam}
+\keyword{datasets}{wam}
+\begin{Description}\relax
+The data set describes the attitude of high school students toward
+mathematics achievement and related topics.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}data(wam)\end{verbatim}
+\end{Usage}
+\begin{Format}\relax
+A data frame with 1190 observations on the following 6 variables.
+\describe{
+\item[\code{lecture}] a factor with levels \code{1} (yes) \code{2} (no) 
+\item[\code{gender}] a factor with levels \code{1} (female) \code{2} (male) 
+\item[\code{school}] a factor with levels \code{1} (suburban) \code{2} (urban) 
+\item[\code{work}] a factor with levels \code{1} (will need math) \code{2} (won't) 
+\item[\code{subject}] a factor with levels \code{1} (science) \code{2} (arts) 
+\item[\code{plans}] a factor with levels \code{1} (college) \code{2} (job) 
+}
+\end{Format}
+\begin{Details}\relax
+1190 high school students of eight schools in New Jersey responded to 
+the questionnaire. The survey was performed by Lacampagne (1979).
+\end{Details}
+\begin{Source}\relax
+Fowlkes, EB, Freeny, AE and Landwehr, JM (1988) \emph{Evaluating logistic models for large contingency tables.}
+Journal of the American Statistical Association, 83:611-622.
+\end{Source}
+\begin{References}\relax
+Lacampagne, CB (1979) \emph{An Evaluation of the Women and Mathematics (WAM) Program and Associated Sex-Related Differences in the Teaching, 
+Learning and Counseling of Mathematics.}
+Ed.D. Thesis, Columbia University Teachers College, USA.
+\end{References}
+\begin{Examples}
+\begin{ExampleCode}
+  data(wam)
+  gm.analysis(wam, program="coco")
+\end{ExampleCode}
+\end{Examples}
+
+\HeaderA{wynder}{Alcohol, Smoking and Oral Cancer}{wynder}
+\keyword{datasets}{wynder}
+\begin{Description}\relax
+Alcohol drinking and smoking among cases of oral cancer and controls.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}data(wynder)\end{verbatim}
+\end{Usage}
+\begin{Format}\relax
+A data frame with 443 observations on the following 3 variables.
+\describe{
+\item[\code{Alc}] a numeric vector indicating the units of alcohol.
+\item[\code{Smoking}] a numeric vector indicating the units of smoked cigarettes.
+\item[\code{Group}] a numeric vector indicating whether the subject is "control" (1) or "case" (2).
+}
+\end{Format}
+\begin{Details}\relax
+One unit of alcohol equals 1 oz (30 cc) of whiskey or 8 oz (237 cc) of beer.
+\end{Details}
+\begin{Source}\relax
+Wynder EE, Bross IJ, Feldman R (1957) \emph{A study of etiological factors in cancer of the mouth.}
+Cancer, 10:1300-1323.
+\end{Source}
+\begin{References}\relax
+Rothman K (1974) \emph{The estimation of synergy or antagonism.}
+American Journal of Epidemiology, 103(5):506-511
+\end{References}
+\begin{Examples}
+\begin{ExampleCode}
+  data(wynder)
+  tab <- table(wynder)
+  dimnames(tab) <- list(c("<1","1-6",">6"), c("<15","16-34",">34"), c("controls","cases"))  
+  names(dimnames(tab)) <- c("Alcohol (unit/day)","Smoking (cigarettes/day)","Group")  
+  tab
+\end{ExampleCode}
+\end{Examples}
+
+\end{document}

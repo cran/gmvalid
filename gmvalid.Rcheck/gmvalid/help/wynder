@@ -1,0 +1,48 @@
+wynder                package:gmvalid                R Documentation
+
+_A_l_c_o_h_o_l, _S_m_o_k_i_n_g _a_n_d _O_r_a_l _C_a_n_c_e_r
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Alcohol drinking and smoking among cases of oral cancer and
+     controls.
+
+_U_s_a_g_e:
+
+     data(wynder)
+
+_F_o_r_m_a_t:
+
+     A data frame with 443 observations on the following 3 variables.
+
+     '_A_l_c' a numeric vector indicating the units of alcohol.
+
+     '_S_m_o_k_i_n_g' a numeric vector indicating the units of smoked
+          cigarettes.
+
+     '_G_r_o_u_p' a numeric vector indicating whether the subject is
+          "control" (1) or "case" (2).
+
+_D_e_t_a_i_l_s:
+
+     One unit of alcohol equals 1 oz (30 cc) of whiskey or 8 oz (237
+     cc) of beer.
+
+_S_o_u_r_c_e:
+
+     Wynder EE, Bross IJ, Feldman R (1957) _A study of etiological
+     factors in cancer of the mouth._ Cancer, 10:1300-1323.
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Rothman K (1974) _The estimation of synergy or antagonism._
+     American Journal of Epidemiology, 103(5):506-511
+
+_E_x_a_m_p_l_e_s:
+
+       data(wynder)
+       tab <- table(wynder)
+       dimnames(tab) <- list(c("<1","1-6",">6"), c("<15","16-34",">34"), c("controls","cases"))  
+       names(dimnames(tab)) <- c("Alcohol (unit/day)","Smoking (cigarettes/day)","Group")  
+       tab
+

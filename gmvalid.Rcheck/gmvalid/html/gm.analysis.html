@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Analyze a data set</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for gm.analysis {gmvalid}"><tr><td>gm.analysis {gmvalid}</td><td align="right">R Documentation</td></tr></table>
+<h2>Analyze a data set</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Graphical model selection by different selection strategies. 
+The selected graph is plotted where line thickness corresponds to an optional edge measure.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+gm.analysis(data, edge.measure = c("gamma.cond", "marg.gamma", "cor", "boot",
+            "cov", "p.value"), program = c("mim", "coco"),
+            strategy = c("backwards", "forwards", "eh"), 
+            plot.significant = TRUE, boot.N = 100, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>data</code></td>
+<td>
+Data frame or a table (array) with at least 2 denominated variables. </td></tr>
+<tr valign="top"><td><code>edge.measure</code></td>
+<td>
+One of "gamma.cond", "marg.gamma", "cor", "boot", "cov", "p.value". To be plotted in the graph. May be abbreviated. See details. </td></tr>
+<tr valign="top"><td><code>program</code></td>
+<td>
+Selects whether MIM or the CoCo package is used for model selection. Calls either the function
+<code><a href="gm.coco.html">gm.coco</a></code> or <code><a href="gm.mim.html">gm.mim</a></code>. May be abbreviated. </td></tr>
+<tr valign="top"><td><code>strategy</code></td>
+<td>
+See <code><a href="gm.coco.html">gm.coco</a></code> or <code><a href="gm.mim.html">gm.mim</a></code>. </td></tr>
+<tr valign="top"><td><code>plot.significant</code></td>
+<td>
+If TRUE only significant edges in the selected models are plotted (in solid lines). If FALSE also not significant edges are plotted as dashed lines.
+</td></tr>
+<tr valign="top"><td><code>boot.N</code></td>
+<td>
+Only required if <code>edge.measure</code> is "boot". Specifies the number of bootstrap replications. </td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+Further options of <code><a href="gm.coco.html">gm.coco</a></code> or <code><a href="gm.mim.html">gm.mim</a></code> can be given. </td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+Different edge measures:<br>
+"gamma.cond" - Conditional gamma coefficient, calls <code><a href="gm.gamma.html">gm.gamma</a></code> with type = conditional.<br>
+"marg.gamma" - Marginal gamma coefficient, calls <code><a href="gm.gamma.html">gm.gamma</a></code> with type = marginal.<br>
+"cor" - Pearson's correlation coefficient, calls <code><a href="../../stats/html/cor.html">cor</a></code>.<br>
+"boot" - calls <code><a href="gm.boot.mim.html">gm.boot.mim</a></code> or <code><a href="gm.boot.coco.html">gm.boot.coco</a></code> depending on the choice of <code>program</code>. <code>boot.N</code> bootstrap replications will be done. The relative edge frequency will be plotted next to it.<br>
+"cov" - Pearson's covariance, calls <code><a href="../../stats/html/cor.html">cov</a></code>. <br>
+"p.value" - is only available if <code>program</code> choice was "mim". Then <code>plot.significant</code> is set to TRUE since the p-value is only available for edges present in the model. In this case the edges will be plotted thinner the smaller the p-value.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+A list containing:
+</p>
+<table summary="R argblock">
+<tr valign="top"><td><code>"strategy"</code></td>
+<td>
+One of "backwards","forwards" and "eh". </td></tr>
+<tr valign="top"><td><code>"model" </code></td>
+<td>
+String vector of the accepted and plotted models. </td></tr>
+<tr valign="top"><td><code>"edge.measure" </code></td>
+<td>
+Character string indicating what type of edge measure was performed. </td></tr>
+<tr valign="top"><td><code>"analysis"</code></td>
+<td>
+Upper-tri matrix with the result of the edge measure values. </td></tr>
+<tr valign="top"><td><code>"variable names"</code></td>
+<td>
+Matrix that assigns a letter to each variable that is used in the model formulas. </td></tr>
+</table>
+
+<h3>Note</h3>
+
+<p>
+The option <code>boot</code> may take some time depending on the size of <code>boot.N</code>.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Fabian Sobotka, Marc Suling, Ronja Foraita <br>
+Bremen Institute for Prevention Research and Social Medicine <br>
+(BIPS)  <a href="http://www.bips.uni-bremen.de">http://www.bips.uni-bremen.de</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="gm.plot.html">gm.plot</a></code>, <code><a href="gm.coco.html">gm.coco</a></code>, <code><a href="gm.mim.html">gm.mim</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  data(wam)
+  gm.analysis(wam)
+  
+  ### showing various options in action
+  gm.analysis(wam,program="c",strategy="f",edge.measure="b",
+    boot.N=50,plot.significant=FALSE,recursive=TRUE,follow=TRUE,decomposable.mode=TRUE)
+              
+  gm.analysis(wam,edge.measure="p",options="u")
+</pre>
+
+
+
+<hr><div align="center">[Package <em>gmvalid</em> version 1.0 <a href="00Index.html">Index]</a></div>
+
+</body></html>

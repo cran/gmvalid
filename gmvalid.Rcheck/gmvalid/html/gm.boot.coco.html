@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Graphical model validation using the bootstrap (CoCo).</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for gm.boot.coco {gmvalid}"><tr><td>gm.boot.coco {gmvalid}</td><td align="right">R Documentation</td></tr></table>
+<h2>Graphical model validation using the bootstrap (CoCo).</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Validates a discrete undirected graphical model using the bootstrap.
+To achieve that the CoCo package is used.
+Relative frequencies of the bootstrapped models, cliques or edges are counted.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+gm.boot.coco(N, data, strategy = c("backwards", "forwards", "eh"),
+            calculations = c("subgraph", "diff", "edge", "clique"),
+            model = FALSE, ...)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>N</code></td>
+<td>
+Number of bootstrap replications. </td></tr>
+<tr valign="top"><td><code>data</code></td>
+<td>
+Data frame or a table (array). Variables should have names, <code>data</code> has to be discrete. </td></tr>
+<tr valign="top"><td><code>strategy</code></td>
+<td>
+Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default (<code><a href="../../CoCoRaw/html/backward.html">backward</a></code>).
+"forwards" adds significant edges, starting from the main effects model (<code><a href="../../CoCoRaw/html/forward.html">forward</a></code>). The "Edwards-Havranek"
+model search rejects complete models in every step and finishes with one or more accepted models (<code><a href="../../CoCoRaw/html/eh.html">eh</a></code>).
+The default strategy is "backwards". Selections may be abbreviated.
+</td></tr>
+<tr valign="top"><td><code>calculations</code></td>
+<td>
+String vector specifying the analysis methods. "subgraph", "clique" and "edge" show the frequency of occurence 
+in all selected models of the bootstrap samples, while "diff" counts the differences
+in the bootstrap replications compared to the edges selected from the original data set.
+The frequency of the selected models of all bootstrap samples are always calculated. By default all calculations are done.
+Selections may be abbreviated.
+</td></tr>
+<tr valign="top"><td><code>model</code></td>
+<td>
+Character string specifying a start model for "backwards" and "forwards" selection procedure.
+For "eh" a character string would specify the base model for tests.
+Since "eh" searches for models between a defined minimal and a maximal model, a string vector of length 2 is another option.
+In this case a minimal and a maximal model is to be given.
+The model formulae has to start with the first lowercase letters of the alphabet, e.g. "abc,cde". Variable names cannot be given.
+</td></tr>
+<tr valign="top"><td><code>...</code></td>
+<td>
+Additional options to be given to the selection procedures. See <code><a href="../../CoCoRaw/html/backward.html">backward</a></code> (forward) or <code><a href="../../CoCoRaw/html/eh.html">eh</a></code>. </td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+This function uses a nonparametric bootstrap.<br>
+For your information about the advancements of the bootstrap, some run numbers will be displayed.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+A list containing:
+</p>
+<table summary="R argblock">
+<tr valign="top"><td><code>"bootstrapped models" </code></td>
+<td>
+Relative frequency vector of selected models with model formulas as categories. </td></tr>
+<tr valign="top"><td><code>"bootstrapped subgraphs" </code></td>
+<td>
+Relative frequencies vector of subgraphs that equals cliques or parts of a clique.
+Returned if calculation "subgraph" is selected.
+</td></tr>
+<tr valign="top"><td><code>"bootstrapped cliques" </code></td>
+<td>
+Relative frequency vector of selected cliques. Returned if calculation "clique" is selected.
+</td></tr>
+<tr valign="top"><td><code>"bootstrapped edges"</code></td>
+<td>
+Matrix with relative frequencies of the edges. Returned if calculation "edge" is selected. </td></tr>
+<tr valign="top"><td><code>"original model"</code></td>
+<td>
+Character string giving the selected model using the original unsampled data. Returned if calculation "diff" is selected. </td></tr>
+<tr valign="top"><td><code>"differences from original data set"</code></td>
+<td>
+List with frequencies of more, less and different edges.
+Sorted by occurence.
+Returned if calculation "diff" is selected. </td></tr>
+<tr valign="top"><td><code>"variable names"</code></td>
+<td>
+Matrix that assigns a letter to each variable that is used in the model formulas. </td></tr>
+</table>
+
+<h3>Note</h3>
+
+<p>
+CoCo may crash R occasionally on a bad day. The R version of CoCo can only handle one CoCoObject.
+You may run "endCoCo()" if you use CoCo also outside this package or the function aborts.<br> 
+Running this function may take a while. A bootstrap with
+data of size 10.000 times 8 and 1.000 replications may take the computer about 2 minutes.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Ronja Foraita, Fabian Sobotka <br>
+Bremen Institute for Prevention Research and Social Medicine <br>
+(BIPS)  <a href="http://www.bips.uni-bremen.de">http://www.bips.uni-bremen.de</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>
+Efron B, Tibshirani RJ (1993) 
+<EM>An Introduction to the Bootstrap.</EM>
+Chapman &amp; Hall
+</p>
+<p>
+Badsberg JH (2001) 
+<EM>A guide to CoCo.</EM>
+Journal of Statistical Software, 6(4).
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="gm.boot.mim.html">gm.boot.mim</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  ### should provide good results because of simulated data
+  gm &lt;- gm.modelsim(2000,"ABC,CDE")
+  gm.boot.coco(50,gm,recursive=TRUE)
+  
+  ### on real data sets a forward bootstrap seems to have better results
+  data(wynder)
+  gm.boot.coco(100,wynder,strategy="f",calculations=c("s","e"),decomposable.mode=TRUE)
+  
+  ### with a given model
+  data(wam)
+  gm.boot.coco(10,wam,model="ab,bcde,cdef")
+</pre>
+
+
+
+<hr><div align="center">[Package <em>gmvalid</em> version 1.0 <a href="00Index.html">Index]</a></div>
+
+</body></html>

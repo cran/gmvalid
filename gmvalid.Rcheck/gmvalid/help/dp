@@ -1,0 +1,36 @@
+dp                  package:gmvalid                  R Documentation
+
+_D_e_a_t_h _p_e_n_a_l_t_y _e_x_a_m_p_l_e _o_f _S_i_m_p_s_o_n'_s _p_a_r_a_d_o_x
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Well known example to illustrate Simpson's paradox. The data set
+     shows that ignoring victim's race lead to a different conclusion
+     than including victim's race in the analysis.
+
+_U_s_a_g_e:
+
+     data(dp)
+
+_F_o_r_m_a_t:
+
+     A data frame with 326 observations on the following 3 variables.
+
+     '_D_e_f_e_n_d_a_n_t_s._R_a_c_e' a factor with levels 'white' and 'black'
+
+     '_V_i_c_t_i_m_s._R_a_c_e' a factor with levels 'white' and 'black'
+
+     '_D_e_a_t_h._P_e_n_a_l_t_y' a factor with levels 'yes' and 'no'
+
+_S_o_u_r_c_e:
+
+     Radelet ML (1981) _Racial characteristics and the imposition of
+     the Death penalty._ American Sociological Review, 46(6):918-927.
+
+_E_x_a_m_p_l_e_s:
+
+     data(dp)
+     ## Graphical model analysis shows that 'defendants' race' is 
+     ## independent from 'death penalty' given 'victims' race'.
+     gm.analysis(dp,program="coco",recursive=TRUE)
+

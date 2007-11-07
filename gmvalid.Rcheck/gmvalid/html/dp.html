@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Death penalty example of Simpson's paradox</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for dp {gmvalid}"><tr><td>dp {gmvalid}</td><td align="right">R Documentation</td></tr></table>
+<h2>Death penalty example of Simpson's paradox</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Well known example to illustrate Simpson's paradox.
+The data set shows that ignoring victim's race lead to a different conclusion
+than including victim's race in the analysis.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>data(dp)</pre>
+
+
+<h3>Format</h3>
+
+<p>
+A data frame with 326 observations on the following 3 variables.
+<dl>
+<dt><code>Defendants.Race</code></dt><dd>a factor with levels <code>white</code> and <code>black</code></dd>
+<dt><code>Victims.Race</code></dt><dd>a factor with levels <code>white</code> and <code>black</code></dd>
+<dt><code>Death.Penalty</code></dt><dd>a factor with levels <code>yes</code> and <code>no</code></dd>
+</dl>
+
+<h3>Source</h3>
+
+<p>
+Radelet ML (1981) <EM>Racial characteristics and the imposition of the Death penalty.</EM>
+American Sociological Review, 46(6):918-927.
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+data(dp)
+## Graphical model analysis shows that 'defendants' race' is 
+## independent from 'death penalty' given 'victims' race'.
+gm.analysis(dp,program="coco",recursive=TRUE)
+</pre>
+
+
+
+<hr><div align="center">[Package <em>gmvalid</em> version 1.0 <a href="00Index.html">Index]</a></div>
+
+</body></html>

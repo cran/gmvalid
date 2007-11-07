@@ -1,0 +1,68 @@
+gm.modelsim             package:gmvalid             R Documentation
+
+_R_a_n_d_o_m _d_a_t_a _f_r_a_m_e_s _w_i_t_h _g_i_v_e_n _d_e_p_e_n_d_e_n_c_e _m_o_d_e_l _a_n_d _m_a_r_g_i_n_a_l_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Generates a random data frame of discrete variables with a given
+     dependence model and marginals.
+
+_U_s_a_g_e:
+
+         gm.modelsim(N, model, categories = 0)
+
+_A_r_g_u_m_e_n_t_s:
+
+       N: Number of observations, sample size. 
+
+   model: A character string assigning a dependence model expressed as
+          clique structure. Each variable has to be expressed as a
+          letter, e.g. "ABC,CDE". 
+
+categories: a list of weight vectors that assigns the weight of each
+          catogory. Number of list elements must equal the number of
+          variables in 'model'. Default is
+          "list(c(.5,.5),c(.5,.5),...)". 
+
+_V_a_l_u_e:
+
+     A data frame with number of rows approximately equal to 'N' and
+     number of columns equal to the number of variables used in
+     'model'.
+
+_N_o_t_e:
+
+     Observed marginal probabilities reflect the given marginal
+     probabilites only approximatively. Works best with population
+     sizes over N=10,000.
+
+_A_u_t_h_o_r(_s):
+
+     Ronja Foraita, Fabian Sobotka 
+      Bremen Institute for Prevention Research and Social Medicine 
+      (BIPS)  <URL: http://www.bips.uni-bremen.de>
+
+_S_e_e _A_l_s_o:
+
+     'gm.generate', 'gm.sim.ixj', 'r2dtable'
+
+_E_x_a_m_p_l_e_s:
+
+         gm.modelsim(100,"AB,AC")
+         table( gm.modelsim(100,"a,b,c") )
+         
+         tmp.df <- gm.modelsim(10000,"abf,cd,cf,bdeg,bfg")
+         
+         # with given number of categories
+         tmp.df <- gm.modelsim(1000,"AB,C",list(c(1,1,1),c(1,1),c(1,1,1)))
+
+         # with given number of categories and marginals
+         tmp.df <- gm.modelsim(1000,"ABC",list(c(0.3,0.3,0.4),c(0.6,.4),c(0.25,0.25,0.5)))
+         table(tmp.df)
+
+         ## Not run: 
+     tmp.df <- gm.modelsim(100,"ABC",list(3,2,3))# (number of categories will be 2 x 2 x 2 )
+                 gm.modelsim(100,"123")
+                 
+     ## End(Not run)
+

@@ -1,0 +1,96 @@
+gm.coco               package:gmvalid               R Documentation
+
+_G_r_a_p_h_i_c_a_l _m_o_d_e_l _s_e_l_e_c_t_i_o_n (_C_o_C_o)
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Selects one or more graphical models (depending on strategy) using
+     the CoCo package. Different types of model selection are
+     available. A base model can be optionally defined.
+
+_U_s_a_g_e:
+
+     gm.coco(data, strategy = c("backwards", "forwards", "eh"), model = FALSE, ...)
+
+_A_r_g_u_m_e_n_t_s:
+
+    data: Data frame or a table (array). Variables should have names,
+          'data' has to be discrete. 
+
+strategy: Type of model selection. "backwards" searches for not
+          significant edges to delete, starting from the saturated
+          model as default ('backward'). "forwards" adds significant
+          edges, starting from the main effects model ('forward'). The
+          "Edwards-Havranek" model search rejects complete models in
+          every step and finishes with one or more accepted models
+          ('eh'). The default strategy is "backwards". Selections may
+          be abbreviated. 
+
+   model: Character string specifying a start model for "backwards" and
+          "forwards" selection procedure. For "eh" a character string
+          would specify the base model for tests. Since "eh" searches
+          for models between a defined minimal and a maximal model, a
+          string vector of length 2 is another option. In this case a
+          minimal and a maximal model is to be given. The model
+          formulae has to start with the first lowercase letters of the
+          alphabet, e.g. "abc,cde". Variable names cannot be given. 
+
+     ...: Additional options to be given to the selection procedures.
+          See 'backward' (forward) or 'eh'. 
+
+_V_a_l_u_e:
+
+     A list containing: 
+
+"accepted" : String vector of the accepted model(s). 
+
+"rejected" : String vector of the rejected model(s). 
+
+  "base": Character string giving the base model the selection started
+          with. 
+
+"strategy": Character string indicating what type of selection strategy
+          was performed. 
+
+ "tests": Matrix containing the test results of the accepted vs. the
+          rejected models  (available if at least one of the models is
+          submodel of another one). Otherwise the accepted and rejected
+          models are tested against the saturated model. 
+
+"variable names": Matrix that assigns a letter to each variable used in
+          the model formulas. 
+
+_N_o_t_e:
+
+     CoCo may crash R occasionally on a bad day. We tried to prevent
+     all crash causes for discrete data. The R version of CoCo can only
+     handle one CoCoObject. You may run "endCoCo()" if you use CoCo
+     also outside this package or the function aborts.
+
+_A_u_t_h_o_r(_s):
+
+     Ronja Foraita, Fabian Sobotka 
+      Bremen Institute for Prevention Research and Social Medicine 
+      (BIPS)  <URL: http://www.bips.uni-bremen.de>
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Badsberg JH (2001) _A guide to CoCo._ Journal of Statistical
+     Software, 6(4).
+
+_S_e_e _A_l_s_o:
+
+     'gm.mim', 'backward', 'eh'
+
+_E_x_a_m_p_l_e_s:
+
+       data(wam)
+       gm.coco(wam)
+       ### giving many options to the strategy
+       gm.coco(wam,recursive=TRUE,follow=TRUE,decomposable.mode=TRUE,
+                 coherent=TRUE,IC=TRUE,BIC=TRUE)
+       
+       ### giving base
+       gm.coco(wam,strategy="e",model=c("ab,cd","ae,be"))
+       gm.coco(wam,strategy="f",model="abc,cd,de,f")
+

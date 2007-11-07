@@ -1,0 +1,73 @@
+\HeaderA{gm.coco}{Graphical model selection (CoCo)}{gm.coco}
+\keyword{models}{gm.coco}
+\keyword{multivariate}{gm.coco}
+\begin{Description}\relax
+Selects one or more graphical models (depending on strategy) using the CoCo package.
+Different types of model selection are available. A base model can be optionally defined.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.coco(data, strategy = c("backwards", "forwards", "eh"), model = FALSE, ...)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] Data frame or a table (array). Variables should have names, \code{data} has to be discrete. 
+\item[\code{strategy}] Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default (\code{\LinkA{backward}{backward}}).
+"forwards" adds significant edges, starting from the main effects model (\code{\LinkA{forward}{forward}}). The "Edwards-Havranek"
+model search rejects complete models in every step and finishes with one or more accepted models (\code{\LinkA{eh}{eh}}).
+The default strategy is "backwards". Selections may be abbreviated.
+
+\item[\code{model}] Character string specifying a start model for "backwards" and "forwards" selection procedure.
+For "eh" a character string would specify the base model for tests.
+Since "eh" searches for models between a defined minimal and a maximal model, a string vector of length 2 is another option.
+In this case a minimal and a maximal model is to be given.
+The model formulae has to start with the first lowercase letters of the alphabet, e.g. "abc,cde". Variable names cannot be given.
+
+\item[\code{...}] Additional options to be given to the selection procedures. See \code{\LinkA{backward}{backward}} (forward) or \code{\LinkA{eh}{eh}}. 
+\end{ldescription}
+\end{Arguments}
+\begin{Value}
+A list containing:
+\begin{ldescription}
+\item[\code{"accepted" }] String vector of the accepted model(s). 
+\item[\code{"rejected" }] String vector of the rejected model(s). 
+\item[\code{"base"}] Character string giving the base model the selection started with. 
+\item[\code{"strategy"}] Character string indicating what type of selection strategy was performed. 
+\item[\code{"tests"}] Matrix containing the test results of the accepted vs. the rejected models 
+(available if at least one of the models is submodel of another one).
+Otherwise the accepted and rejected models are tested against the saturated model. 
+\item[\code{"variable names"}] Matrix that assigns a letter to each variable used in the model formulas. 
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+CoCo may crash R occasionally on a bad day. We tried to prevent all crash causes for discrete data. The R version of CoCo can only handle one CoCoObject.
+You may run "endCoCo()" if you use CoCo also outside this package or the function aborts.
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{References}\relax
+Badsberg JH (2001)
+\emph{A guide to CoCo.}
+Journal of Statistical Software, 6(4).
+\end{References}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.mim}{gm.mim}}, \code{\LinkA{backward}{backward}}, \code{\LinkA{eh}{eh}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  data(wam)
+  gm.coco(wam)
+  ### giving many options to the strategy
+  gm.coco(wam,recursive=TRUE,follow=TRUE,decomposable.mode=TRUE,
+            coherent=TRUE,IC=TRUE,BIC=TRUE)
+  
+  ### giving base
+  gm.coco(wam,strategy="e",model=c("ab,cd","ae,be"))
+  gm.coco(wam,strategy="f",model="abc,cd,de,f")
+\end{ExampleCode}
+\end{Examples}
+

@@ -1,0 +1,122 @@
+gm.mim                package:gmvalid                R Documentation
+
+_G_r_a_p_h_i_c_a_l _m_o_d_e_l _s_e_l_e_c_t_i_o_n (_M_I_M)
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Selects one or more graphical models (depending on strategy) using
+     the program MIM. Different types of model selection are available.
+     A base model can be optionally defined.
+
+_U_s_a_g_e:
+
+     gm.mim(data, strategy = c("backwards", "forwards", "eh"),
+             model = FALSE, chain = FALSE, options = "")
+
+_A_r_g_u_m_e_n_t_s:
+
+    data: Data frame or a table (array). Variables should have names.
+          'data' has to be discrete. 
+
+strategy: Type of model selection. "backwards" searches for not
+          significant edges to delete, starting from the saturated
+          model as default. "forwards" adds significant edges, starting
+          from the main effects model. The "Edwards-Havranek" model
+          search rejects complete models in every step and finishes
+          with one or more accepted models. The default strategy is
+          "backwards". Selections may be abbreviated. 
+
+   model: Character string specifying a start model for "backwards" and
+          "forwards" selection procedure. For the "eh" procedure a
+          minimal and a maximal model has to be assigned in one string
+          connected with a " - " (see Example). The model formulae has
+          to start with the first lowercase letters of the alphabet,
+          e.g. "abc,cde". Variable names cannot be given. 
+
+   chain: Character string to specify the block structure of directed
+          graphical models. The syntax is "vs1|vs2|vs3" where
+          vs1,vs2,vs3 are sets of variables and the variables in vs1
+          are prior to those in vs2 etc. The formula has to be given
+          with the first lowercase letters of the alphabet, e.g.
+          "a|bc|d". Variable names cannot be given. For more
+          information search the MIM help for "block overview". 
+
+ options: Character string specifying further options for the search
+          strategy. Possible options can be found in the MIM help when
+          searching for "stepwise" (backwards, forwards) or
+          "startsearch" (eh).  See 'details'. 
+
+_D_e_t_a_i_l_s:
+
+     MIM options for stepwise procedures (backwards, forwards):
+      "A" - uses the AIC as selection criterion
+      "B" - uses the BIC as selection criterion
+      "J" - joggles between backward and forward
+      "N" - non coherent mode
+      "U" - unrestricted, allows for non-decomposable models;
+
+     MIM options for the eh modelsearch:
+      (positive number) - maximum number of models fitted
+      white space
+      (letters) - "U" for upward search, "D" for downward, default is
+     both.
+
+_V_a_l_u_e:
+
+     A list containing: 
+
+"accepted" : String vector of the accepted model(s). 
+
+"rejected" : String vector of the rejected model(s). 
+
+  "base": Character string with the base model the selection started
+          with. NA for "eh". 
+
+"strategy": Character string indicating what type of selection strategy
+          was performed. 
+
+"tests against saturated": Matrix giving the test results of the
+          accepted and the rejected models against the saturated model. 
+
+"p values": Upper-tri matrix with p-values of those edges in the
+          accepted models. NA if edge is misseing. 
+
+"variable names": Matrix that assigns a letter to each variable that is
+          used in the model formulas. 
+
+_N_o_t_e:
+
+     The function requires the MIM program. Make sure that it is
+     running before using the function. The package mimR will only work
+     properly if your temporary directory has a path where every folder
+     has a name containing only 8 letters or less. mimR needs the
+     Rgraphviz package. Therefore you will have to add "Bioconductor"
+     to your R repositories.
+
+_A_u_t_h_o_r(_s):
+
+     Ronja Foraita, Fabian Sobotka 
+      Bremen Institute for Prevention Research and Social Medicine 
+      (BIPS)  <URL: http://www.bips.uni-bremen.de>
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Edwards D (2000)  _An Introduction to Graphical Modelling._ Second
+     Edition, Springer Verlag.
+
+_S_e_e _A_l_s_o:
+
+     'gm.coco'
+
+_E_x_a_m_p_l_e_s:
+
+       data(wam)
+       gm.mim(wam)
+       ### giving strategy
+       gm.mim(wam,strategy="e")
+       
+       ### giving minimal and maximal model
+       gm.mim(wam,strategy="e",model="a,bc,de,f - abcd,cdef")
+       ### giving block structure
+       gm.mim(wam,strategy="f",model="a,b,c|abc,de|abcd,ef",chain="abc|de|f",options="BNU")
+

@@ -1,0 +1,113 @@
+Entry: dp
+Aliases: dp
+Keywords: datasets
+Description: Death penalty example of Simpson's paradox
+URL: ../../../library/gmvalid/html/dp.html
+
+Entry: gm.analysis
+Aliases: gm.analysis
+Keywords: multivariate nonparametric graphs hplot models
+Description: Analyze a data set
+URL: ../../../library/gmvalid/html/gm.analysis.html
+
+Entry: gm.boot.coco
+Aliases: gm.boot.coco
+Keywords: nonparametric multivariate models
+Description: Graphical model validation using the bootstrap (CoCo).
+URL: ../../../library/gmvalid/html/gm.boot.coco.html
+
+Entry: gm.boot.mim
+Aliases: gm.boot.mim
+Keywords: nonparametric multivariate models
+Description: Graphical model validation using the bootstrap (MIM).
+URL: ../../../library/gmvalid/html/gm.boot.mim.html
+
+Entry: gm.coco
+Aliases: gm.coco
+Keywords: models multivariate
+Description: Graphical model selection (CoCo)
+URL: ../../../library/gmvalid/html/gm.coco.html
+
+Entry: gm.csi
+Aliases: gm.csi
+Keywords: htest
+Description: Conditional Synergy Index
+URL: ../../../library/gmvalid/html/gm.csi.html
+
+Entry: gm.cv
+Aliases: gm.cv
+Keywords: models regression
+Description: Cross Validation for Graphical (Chain) Models
+URL: ../../../library/gmvalid/html/gm.cv.html
+
+Entry: gm.gamma
+Aliases: gm.gamma
+Keywords: htest
+Description: Conditional Gamma coefficient estimation and confidence intervals
+URL: ../../../library/gmvalid/html/gm.gamma.html
+
+Entry: gm.generate
+Aliases: gm.generate
+Keywords: datagen distribution
+Description: Random data frames of binary variables with given marginals
+URL: ../../../library/gmvalid/html/gm.generate.html
+
+Entry: gm.mim
+Aliases: gm.mim
+Keywords: models multivariate
+Description: Graphical model selection (MIM)
+URL: ../../../library/gmvalid/html/gm.mim.html
+
+Entry: gm.modelsim
+Aliases: gm.modelsim
+Keywords: datagen graphs
+Description: Random data frames with given dependence model and marginals
+URL: ../../../library/gmvalid/html/gm.modelsim.html
+
+Entry: gm.or, gm.rr
+Aliases: gm.or gm.rr
+Keywords: htest
+Description: Stratified odds ratios or risk ratios
+URL: ../../../library/gmvalid/html/gm.or.html
+
+Entry: gm.plot
+Aliases: gm.plot
+Keywords: hplot graphs
+Description: Plot graphical models
+URL: ../../../library/gmvalid/html/gm.plot.html
+
+Entry: gm.si
+Aliases: gm.si
+Keywords: htest
+Description: Synergy Index
+URL: ../../../library/gmvalid/html/gm.si.html
+
+Entry: gm.sim.ixj
+Aliases: gm.sim.ixj
+Keywords: datagen
+Description: Random (i x j)-way dependency tables with given marginals
+URL: ../../../library/gmvalid/html/gm.sim.ixj.html
+
+Entry: gmvalid-package
+Aliases: gmvalid-package gmvalid
+Keywords: datagen models multivariate nonparametric graphs htest
+Description: Validation of graphical models
+URL: ../../../library/gmvalid/html/gmvalid-package.html
+
+Entry: idd35
+Aliases: idd35
+Keywords: datasets
+Description: Type 1 Diabetes susceptibility loci Idd3 and Idd5
+URL: ../../../library/gmvalid/html/idd35.html
+
+Entry: wam
+Aliases: wam
+Keywords: datasets
+Description: Women and Mathematics
+URL: ../../../library/gmvalid/html/wam.html
+
+Entry: wynder
+Aliases: wynder
+Keywords: datasets
+Description: Alcohol, Smoking and Oral Cancer
+URL: ../../../library/gmvalid/html/wynder.html

@@ -1,0 +1,129 @@
+gm.boot.coco             package:gmvalid             R Documentation
+
+_G_r_a_p_h_i_c_a_l _m_o_d_e_l _v_a_l_i_d_a_t_i_o_n _u_s_i_n_g _t_h_e _b_o_o_t_s_t_r_a_p (_C_o_C_o).
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Validates a discrete undirected graphical model using the
+     bootstrap. To achieve that the CoCo package is used. Relative
+     frequencies of the bootstrapped models, cliques or edges are
+     counted.
+
+_U_s_a_g_e:
+
+     gm.boot.coco(N, data, strategy = c("backwards", "forwards", "eh"),
+                 calculations = c("subgraph", "diff", "edge", "clique"),
+                 model = FALSE, ...)
+
+_A_r_g_u_m_e_n_t_s:
+
+       N: Number of bootstrap replications. 
+
+    data: Data frame or a table (array). Variables should have names,
+          'data' has to be discrete. 
+
+strategy: Type of model selection. "backwards" searches for not
+          significant edges to delete, starting from the saturated
+          model as default ('backward'). "forwards" adds significant
+          edges, starting from the main effects model ('forward'). The
+          "Edwards-Havranek" model search rejects complete models in
+          every step and finishes with one or more accepted models
+          ('eh'). The default strategy is "backwards". Selections may
+          be abbreviated. 
+
+calculations: String vector specifying the analysis methods.
+          "subgraph", "clique" and "edge" show the frequency of
+          occurence  in all selected models of the bootstrap samples,
+          while "diff" counts the differences in the bootstrap
+          replications compared to the edges selected from the original
+          data set. The frequency of the selected models of all
+          bootstrap samples are always calculated. By default all
+          calculations are done. Selections may be abbreviated. 
+
+   model: Character string specifying a start model for "backwards" and
+          "forwards" selection procedure. For "eh" a character string
+          would specify the base model for tests. Since "eh" searches
+          for models between a defined minimal and a maximal model, a
+          string vector of length 2 is another option. In this case a
+          minimal and a maximal model is to be given. The model
+          formulae has to start with the first lowercase letters of the
+          alphabet, e.g. "abc,cde". Variable names cannot be given. 
+
+     ...: Additional options to be given to the selection procedures.
+          See 'backward' (forward) or 'eh'. 
+
+_D_e_t_a_i_l_s:
+
+     This function uses a nonparametric bootstrap.
+      For your information about the advancements of the bootstrap,
+     some run numbers will be displayed.
+
+_V_a_l_u_e:
+
+     A list containing: 
+
+"bootstrapped models" : Relative frequency vector of selected models
+          with model formulas as categories. 
+
+"bootstrapped subgraphs" : Relative frequencies vector of subgraphs
+          that equals cliques or parts of a clique. Returned if
+          calculation "subgraph" is selected. 
+
+"bootstrapped cliques" : Relative frequency vector of selected cliques.
+          Returned if calculation "clique" is selected. 
+
+"bootstrapped edges": Matrix with relative frequencies of the edges.
+          Returned if calculation "edge" is selected. 
+
+"original model": Character string giving the selected model using the
+          original unsampled data. Returned if calculation "diff" is
+          selected. 
+
+"differences from original data set": List with frequencies of more,
+          less and different edges. Sorted by occurence. Returned if
+          calculation "diff" is selected. 
+
+"variable names": Matrix that assigns a letter to each variable that is
+          used in the model formulas. 
+
+_N_o_t_e:
+
+     CoCo may crash R occasionally on a bad day. The R version of CoCo
+     can only handle one CoCoObject. You may run "endCoCo()" if you use
+     CoCo also outside this package or the function aborts.
+       Running this function may take a while. A bootstrap with data of
+     size 10.000 times 8 and 1.000 replications may take the computer
+     about 2 minutes.
+
+_A_u_t_h_o_r(_s):
+
+     Ronja Foraita, Fabian Sobotka 
+      Bremen Institute for Prevention Research and Social Medicine 
+      (BIPS)  <URL: http://www.bips.uni-bremen.de>
+
+_R_e_f_e_r_e_n_c_e_s:
+
+     Efron B, Tibshirani RJ (1993)  _An Introduction to the Bootstrap._
+     Chapman & Hall
+
+     Badsberg JH (2001)  _A guide to CoCo._ Journal of Statistical
+     Software, 6(4).
+
+_S_e_e _A_l_s_o:
+
+     'gm.boot.mim'
+
+_E_x_a_m_p_l_e_s:
+
+       ### should provide good results because of simulated data
+       gm <- gm.modelsim(2000,"ABC,CDE")
+       gm.boot.coco(50,gm,recursive=TRUE)
+       
+       ### on real data sets a forward bootstrap seems to have better results
+       data(wynder)
+       gm.boot.coco(100,wynder,strategy="f",calculations=c("s","e"),decomposable.mode=TRUE)
+       
+       ### with a given model
+       data(wam)
+       gm.boot.coco(10,wam,model="ab,bcde,cdef")
+

@@ -1,0 +1,66 @@
+installing R.css in F:/public/APPLIC/r/R-2.6.0/bin/gmvalid.Rcheck
+
+
+---------- Making package gmvalid ------------
+  adding build stamp to DESCRIPTION
+  installing R files
+  installing data files
+  installing man source files
+  installing indices
+  not zipping data
+  installing help
+ >>> Building/Updating help pages for package 'gmvalid'
+     Formats: text html latex example chm 
+  dp                                text    html    latex   example
+  gm.analysis                       text    html    latex   example
+  gm.boot.coco                      text    html    latex   example
+  gm.boot.mim                       text    html    latex   example
+  gm.coco                           text    html    latex   example
+  gm.csi                            text    html    latex   example
+  gm.cv                             text    html    latex   example
+  gm.gamma                          text    html    latex   example
+  gm.generate                       text    html    latex   example
+  gm.mim                            text    html    latex   example
+  gm.modelsim                       text    html    latex   example
+  gm.or                             text    html    latex   example
+  gm.plot                           text    html    latex   example
+  gm.si                             text    html    latex   example
+  gm.sim.ixj                        text    html    latex   example
+  gmvalid-package                   text    html    latex   example chm
+  idd35                             text    html    latex   example chm
+  wam                               text    html    latex   example
+  wynder                            text    html    latex   example
+CHM compile failed: HTML Help Workshop not installed?
+  preparing package gmvalid for lazy loading
+Loading required package: grid
+Loading required package: epitools
+Loading required package: mimR
+Loading required package: Rgraphviz
+Loading required package: graph
+Loading required package: rcom
+Loading required package: MASS
+Loading required package: CoCo
+Loading required package: dynamicGraph
+Loading required package: ggm
+
+Attaching package: 'ggm'
+
+
+	The following object(s) are masked from package:mimR :
+
+	 cliques 
+
+
+	The following object(s) are masked from package:graph :
+
+	 edgeMatrix 
+
+Loading required package: tcltk
+Loading Tcl/Tk interface ... done
+Loading required package: CoCoObjects
+Loading required package: CoCoCore
+Loading required package: CoCoRaw
+Loading required package: gtools
+  adding MD5 sums
+
+* DONE (gmvalid)

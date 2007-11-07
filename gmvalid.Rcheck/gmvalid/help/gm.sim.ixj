@@ -1,0 +1,52 @@
+gm.sim.ixj              package:gmvalid              R Documentation
+
+_R_a_n_d_o_m (_i _x _j)-_w_a_y _d_e_p_e_n_d_e_n_c_y _t_a_b_l_e_s _w_i_t_h _g_i_v_e_n _m_a_r_g_i_n_a_l_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Generates random (i x j)-way dependency tables with given
+     marginals.
+
+_U_s_a_g_e:
+
+     gm.sim.ixj(N, pa, pb)
+
+_A_r_g_u_m_e_n_t_s:
+
+       N: Number of observations; sample size. 
+
+      pa: Weight vector of length i to assign the distribution of the
+          row totals. 
+
+      pb: Weight vector of length j to assign the distribution of the
+          column totals. 
+
+_V_a_l_u_e:
+
+     A (i x j)-matrix.
+
+_N_o_t_e:
+
+     Observed totals that were generated according to the shorter
+     weight vector  reflect the given weights only approximatively.
+
+_A_u_t_h_o_r(_s):
+
+     Ronja Foraita, Fabian Sobotka 
+      Bremen Institute for Prevention Research and Social Medicine 
+      (BIPS)  <URL: http://www.bips.uni-bremen.de>
+
+_S_e_e _A_l_s_o:
+
+     'gm.generate', 'gm.modelsim', 'r2dtable'
+
+_E_x_a_m_p_l_e_s:
+
+         gm.sim.ixj(1000,c(1,1,1),c(1,1,1,1,1))
+         gm.sim.ixj(1000,c(.2,.3,.4,.1),c(.5,.2,.3)) 
+         
+         round(gm.sim.ixj(30,c(1,1),c(1,1)))       
+         
+         tab <- round(gm.sim.ixj(500,c(.5,.5),c(.5,.5)))
+         chisq.test(tab)   
+

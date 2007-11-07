@@ -1,0 +1,41 @@
+gm.generate             package:gmvalid             R Documentation
+
+_R_a_n_d_o_m _d_a_t_a _f_r_a_m_e_s _o_f _b_i_n_a_r_y _v_a_r_i_a_b_l_e_s _w_i_t_h _g_i_v_e_n _m_a_r_g_i_n_a_l_s
+
+_D_e_s_c_r_i_p_t_i_o_n:
+
+     Generates a random data frame of independent binary variables with
+     given marginals.
+
+_U_s_a_g_e:
+
+     gm.generate(N, p = c(0.5, 0.5, 0.5))
+
+_A_r_g_u_m_e_n_t_s:
+
+       N: Number of observations, sample size. 
+
+       p: Probability vector. Each element assigns the probability to
+          draw a "2". The user-defined number of elements determines
+          the number of variables in the resulting data frame. 
+
+_V_a_l_u_e:
+
+     A data frame with number of rows equal to 'N' and number of
+     columns equal to the length of 'p'.
+
+_A_u_t_h_o_r(_s):
+
+     Ronja Foraita, Fabian Sobotka 
+      Bremen Institute for Prevention Research and Social Medicine 
+      (BIPS)  <URL: http://www.bips.uni-bremen.de>
+
+_S_e_e _A_l_s_o:
+
+     'gm.modelsim', 'gm.sim.ixj', 'r2dtable'
+
+_E_x_a_m_p_l_e_s:
+
+     gm.generate(10,c(.5,.2,.2))
+     gm.generate(15,c(.5,.5,.5,.5,.5,.5))
+

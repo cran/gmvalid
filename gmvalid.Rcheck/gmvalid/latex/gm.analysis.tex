@@ -1,0 +1,74 @@
+\HeaderA{gm.analysis}{Analyze a data set}{gm.analysis}
+\keyword{multivariate}{gm.analysis}
+\keyword{nonparametric}{gm.analysis}
+\keyword{graphs}{gm.analysis}
+\keyword{hplot}{gm.analysis}
+\keyword{models}{gm.analysis}
+\begin{Description}\relax
+Graphical model selection by different selection strategies. 
+The selected graph is plotted where line thickness corresponds to an optional edge measure.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.analysis(data, edge.measure = c("gamma.cond", "marg.gamma", "cor", "boot",
+            "cov", "p.value"), program = c("mim", "coco"),
+            strategy = c("backwards", "forwards", "eh"), 
+            plot.significant = TRUE, boot.N = 100, ...)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{data}] Data frame or a table (array) with at least 2 denominated variables. 
+\item[\code{edge.measure}] One of "gamma.cond", "marg.gamma", "cor", "boot", "cov", "p.value". To be plotted in the graph. May be abbreviated. See details. 
+\item[\code{program}] Selects whether MIM or the CoCo package is used for model selection. Calls either the function
+\code{\LinkA{gm.coco}{gm.coco}} or \code{\LinkA{gm.mim}{gm.mim}}. May be abbreviated. 
+\item[\code{strategy}] See \code{\LinkA{gm.coco}{gm.coco}} or \code{\LinkA{gm.mim}{gm.mim}}. 
+\item[\code{plot.significant}] If TRUE only significant edges in the selected models are plotted (in solid lines). If FALSE also not significant edges are plotted as dashed lines.
+
+\item[\code{boot.N}] Only required if \code{edge.measure} is "boot". Specifies the number of bootstrap replications. 
+\item[\code{...}] Further options of \code{\LinkA{gm.coco}{gm.coco}} or \code{\LinkA{gm.mim}{gm.mim}} can be given. 
+\end{ldescription}
+\end{Arguments}
+\begin{Details}\relax
+Different edge measures:\\
+"gamma.cond" - Conditional gamma coefficient, calls \code{\LinkA{gm.gamma}{gm.gamma}} with type = conditional.\\
+"marg.gamma" - Marginal gamma coefficient, calls \code{\LinkA{gm.gamma}{gm.gamma}} with type = marginal.\\
+"cor" - Pearson's correlation coefficient, calls \code{\LinkA{cor}{cor}}.\\
+"boot" - calls \code{\LinkA{gm.boot.mim}{gm.boot.mim}} or \code{\LinkA{gm.boot.coco}{gm.boot.coco}} depending on the choice of \code{program}. \code{boot.N} bootstrap replications will be done. The relative edge frequency will be plotted next to it.\\
+"cov" - Pearson's covariance, calls \code{\LinkA{cov}{cov}}. \\
+"p.value" - is only available if \code{program} choice was "mim". Then \code{plot.significant} is set to TRUE since the p-value is only available for edges present in the model. In this case the edges will be plotted thinner the smaller the p-value.
+\end{Details}
+\begin{Value}
+A list containing:
+\begin{ldescription}
+\item[\code{"strategy"}] One of "backwards","forwards" and "eh". 
+\item[\code{"model" }] String vector of the accepted and plotted models. 
+\item[\code{"edge.measure" }] Character string indicating what type of edge measure was performed. 
+\item[\code{"analysis"}] Upper-tri matrix with the result of the edge measure values. 
+\item[\code{"variable names"}] Matrix that assigns a letter to each variable that is used in the model formulas. 
+\end{ldescription}
+\end{Value}
+\begin{Note}\relax
+The option \code{boot} may take some time depending on the size of \code{boot.N}.
+\end{Note}
+\begin{Author}\relax
+Fabian Sobotka, Marc Suling, Ronja Foraita \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.plot}{gm.plot}}, \code{\LinkA{gm.coco}{gm.coco}}, \code{\LinkA{gm.mim}{gm.mim}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+  data(wam)
+  gm.analysis(wam)
+  
+  ### showing various options in action
+  gm.analysis(wam,program="c",strategy="f",edge.measure="b",
+    boot.N=50,plot.significant=FALSE,recursive=TRUE,follow=TRUE,decomposable.mode=TRUE)
+              
+  gm.analysis(wam,edge.measure="p",options="u")
+\end{ExampleCode}
+\end{Examples}
+

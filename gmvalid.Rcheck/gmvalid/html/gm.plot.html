@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Plot graphical models</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for gm.plot {gmvalid}"><tr><td>gm.plot {gmvalid}</td><td align="right">R Documentation</td></tr></table>
+<h2>Plot graphical models</h2>
+
+
+<h3>Description</h3>
+
+<p>
+Plots given graphical models and writes provided measures next to the edges.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre>
+gm.plot(model, significant = TRUE, data.analysis = 0)
+</pre>
+
+
+<h3>Arguments</h3>
+
+<table summary="R argblock">
+<tr valign="top"><td><code>model</code></td>
+<td>
+String vector with model formulas. See <code><a href="gm.modelsim.html">gm.modelsim</a></code>. </td></tr>
+<tr valign="top"><td><code>significant</code></td>
+<td>
+If TRUE only significant edges in the selected models are plotted (in solid lines). If FALSE also not significant edges are plotted as dashed lines.
+</td></tr>
+<tr valign="top"><td><code>data.analysis</code></td>
+<td>
+Upper-tri matrix with the measure for the edge between variables i and j (i&gt;j) at matrix position [i,j]. If the length of the <code>model</code> is bigger than 1, <code>data.analysis</code> has to be a list of matrices. </td></tr>
+</table>
+
+<h3>Details</h3>
+
+<p>
+The line width of the edges will depend on the size of the numbers in <code>data.analysis</code>.
+</p>
+
+
+<h3>Value</h3>
+
+<p>
+TRUE</p>
+
+<h3>Note</h3>
+
+<p>
+Every use of the plot function opens a new window.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Fabian Sobotka, Marc Suling, Ronja Foraita <br>
+Bremen Institute for Prevention Research and Social Medicine <br>
+(BIPS)  <a href="http://www.bips.uni-bremen.de">http://www.bips.uni-bremen.de</a>
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="gm.analysis.html">gm.analysis</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+  gm.plot("ABC,CDE")
+
+  gm.plot("VBA,EVC")
+  
+  gm.plot(c("ABC,CDE","AB,BC,CD,DE","ABC,DEF,GHI"))
+  
+  gm.plot("AB,AC",FALSE,matrix(0.5,nrow=3,ncol=3))
+</pre>
+
+
+
+<hr><div align="center">[Package <em>gmvalid</em> version 1.0 <a href="00Index.html">Index]</a></div>
+
+</body></html>

@@ -1,0 +1,44 @@
+\HeaderA{gm.sim.ixj}{Random (i x j)-way dependency tables with given marginals}{gm.sim.ixj}
+\keyword{datagen}{gm.sim.ixj}
+\begin{Description}\relax
+Generates random (i x j)-way dependency tables with given marginals.
+\end{Description}
+\begin{Usage}
+\begin{verbatim}
+gm.sim.ixj(N, pa, pb)
+\end{verbatim}
+\end{Usage}
+\begin{Arguments}
+\begin{ldescription}
+\item[\code{N}] Number of observations; sample size. 
+\item[\code{pa}] Weight vector of length i to assign the distribution of the row totals. 
+\item[\code{pb}] Weight vector of length j to assign the distribution of the column totals. 
+\end{ldescription}
+\end{Arguments}
+\begin{Value}
+A (i x j)-matrix.
+\end{Value}
+\begin{Note}\relax
+Observed totals that were generated according to the shorter weight vector 
+reflect the given weights only approximatively.
+\end{Note}
+\begin{Author}\relax
+Ronja Foraita, Fabian Sobotka \\
+Bremen Institute for Prevention Research and Social Medicine \\
+(BIPS)  \url{http://www.bips.uni-bremen.de}
+\end{Author}
+\begin{SeeAlso}\relax
+\code{\LinkA{gm.generate}{gm.generate}}, \code{\LinkA{gm.modelsim}{gm.modelsim}}, \code{\LinkA{r2dtable}{r2dtable}}
+\end{SeeAlso}
+\begin{Examples}
+\begin{ExampleCode}
+    gm.sim.ixj(1000,c(1,1,1),c(1,1,1,1,1))
+    gm.sim.ixj(1000,c(.2,.3,.4,.1),c(.5,.2,.3)) 
+    
+    round(gm.sim.ixj(30,c(1,1),c(1,1)))       
+    
+    tab <- round(gm.sim.ixj(500,c(.5,.5),c(.5,.5)))
+    chisq.test(tab)   
+\end{ExampleCode}
+\end{Examples}
+

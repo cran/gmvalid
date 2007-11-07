@@ -1,0 +1,146 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>R: Validation of graphical models</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link rel="stylesheet" type="text/css" href="../../R.css">
+</head><body>
+
+<table width="100%" summary="page for gmvalid-package {gmvalid}"><tr><td>gmvalid-package {gmvalid}</td><td align="right">R Documentation</td></tr></table>
+<h2>Validation of graphical models</h2>
+
+
+<h3>Description</h3>
+
+<p>
+This package provides functions among others that can be used to analyse
+graphical models. This includes e.g. the possibility
+to simulate data sets given a dependence model,
+to analyze discrete graphical models utilizing the MIM program or the CoCo package
+and to quantify associations or interactions.
+</p>
+<p>
+Furthermore, a selected graphical model can be validated using the bootstrap and
+the best prediction model can be evaluated for a dichotomous outcome variable and several discrete influences
+using cross validation.
+</p>
+
+
+<h3>Details</h3>
+
+<p>
+<table summary="Rd table">
+<tr>
+  <td align="left">Package: </td>  <td align="left"> gmvalid</td>
+</tr>
+<tr>
+  <td align="left"> Type: </td>  <td align="left"> Package</td>
+</tr>
+<tr>
+  <td align="left"> Version: </td>  <td align="left"> 1.0</td>
+</tr>
+<tr>
+  <td align="left"> Date: </td>  <td align="left"> 2007-11-07</td>
+</tr>
+<tr>
+  <td align="left"> License: </td>  <td align="left"> GPL (&gt;=2) </td>
+</tr>
+</table>
+
+<li>This package requires the packages mimR and CoCo as well as the software MIM that can be downloaded at <a href="http://www.hypergraph.dk">http://www.hypergraph.dk</a>.
+<li>The mimR package itself requires the package Rgraphviz that is found in the Bioconductor repository.
+<li>Further the packages grid, epitools and gtools are required.
+<li>Before using any functions that use MIM make sure that the program is runnning.
+<li>The package mimR will only work properly if your Windows temporary directory has a path
+where every folder has a name containing only 8 letters or less.
+<li>For mimR requirements we refer to the package's help page <code><a href="../../mimR/html/mimR-package.html">mimR</a></code>.
+<li>If CoCo calculations fail, please type "endCoCo()" to remove temporary files. 
+<li>CoCo crashes occasionally. If you have recurring problems with a specific data set, we suggest to use the MIM-option. Otherwise reboot the Computer.
+<li>Model formulas have to be specified according to MIM model formulas or respectively CoCo model formulas.
+</p>
+
+
+<h3>Note</h3>
+
+<p>
+This work has been supported by the German Research Foundation<br>
+(DFG: <a href="http://www.dfg.de">http://www.dfg.de</a>)
+under grant scheme PI 345/2-1.
+</p>
+
+
+<h3>Author(s)</h3>
+
+<p>
+Ronja Foraita, Fabian Sobotka <br>
+Bremen Institute for Prevention Research and Social Medicine <br>
+(BIPS)  <a href="http://www.bips.uni-bremen.de">http://www.bips.uni-bremen.de</a>
+</p>
+
+
+<h3>References</h3>
+
+<p>
+&gt; MIM (<a href="http://www.hypergraph.dk/">http://www.hypergraph.dk/</a>) <br>
+Edwards D (2002) 
+<EM>An Introduction to Graphical Modelling.</EM>
+Springer
+</p>
+<p>
+&gt; mimR (<a href="http://genetics.agrsci.dk/~sorenh/mimR/index.html">http://genetics.agrsci.dk/~sorenh/mimR/index.html</a>)<br>
+Højsgaard S (2004) 
+<EM>The mimR package for graphical modelling in R.</EM>
+Journal of Statistical Software, 11(6).
+</p>
+<p>
+&gt; CoCo (<a href="http://www.badsberg.eu">http://www.badsberg.eu</a>)<br>
+Badsberg JH (2001) 
+<EM>A guide to CoCo.</EM>
+Journal of Statistical Software, 6(4).
+</p>
+<p>
+&gt; CSI <br>
+Foraita R (2007) 
+<EM>A conditional synergy index to assess biological interaction.</EM>
+Working Paper. Please send an e-mail to <a href="mailto:foraita@bips.uni-bremen.de">foraita@bips.uni-bremen.de</a>.
+</p>
+
+
+<h3>See Also</h3>
+
+<p>
+<code><a href="../../mimR/html/mimR-package.html">mimR</a></code>,  <code><a href="../../CoCo/html/CoCo-package.html">CoCo</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre>
+    ### Generates a data frame given a dependence model
+    gm.a &lt;- gm.modelsim(1000,"ABC,CDE")
+    
+    ### Modelselection with graphical output
+    gm.analysis(gm.a)   
+    
+    ### Model validation using the bootstrap 
+    gm.boot.coco(100,gm.a,recursive=TRUE,follow=TRUE)
+
+    ### Model prediction using cross validation
+    gm.cv(3,data=gm.a,strategy="f",options="b")
+    
+    ### Testing interaction on the penetrance scale
+    ### using the conditional synergy index (CSI)
+    gm.csi(1,2,3,data=gm.a)
+
+    ### Testing interaction on a additivity scale
+    ### using the synergy index (S)
+    gm.si(1,2,3,data=gm.a)   
+
+    ### Gamma Coefficient B indpendent D given C
+    gm.gamma(2,4,data=gm.a,conditions=3)
+
+</pre>
+
+
+
+<hr><div align="center">[Package <em>gmvalid</em> version 1.0 <a href="00Index.html">Index]</a></div>
+
+</body></html>
