@@ -1,0 +1,33 @@
+gmvalid 1.1
+-----------
+
+New features:
+
+- New function gm.gms: model selection based on gamma coefficient
+- New function gm.validation: univariate validation of graphical models
+- New function gm.chi: conditional chi-squared test
+- New function gm.screening: preliminary model search
+- New selection strategy: combined (screening, backward, forward)
+- Package now also available for Unix and Mac OS X
+- Model tests in gm.coco and gm.mim now optional
+- New measures in gm.cv
+    
+Bug fixes:
+
+- Less CoCo crashes
+- Removed table raking from gm.modelsim and gm.sim.ixj,
+  that marginal distributions will now be fulfilled better
+- bug in gm.cv identified by 2.6.2 R check
+
+Other changes:
+
+- Dependency of mimR removed, usage is now optional
+- Strategy "eh" removed from bootstrap functions,
+  no sensible outcome was possible and too time consuming
+- gm.plot uses new code for plot windows
+
+
+gmvalid 1.0
+-----------
+
+- release

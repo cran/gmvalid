@@ -1,16 +1,13 @@
-`gm.boot.coco` <-
-function (N, data, strategy = c("backwards", "forwards", "combined"), 
-    calculations = c("subgraph", "diff", "edge", "clique"), model = FALSE, 
-    criterion = c("lr", "aic", "bic"), ...) 
+`gm.boot.mim` <-
+function (N, data, strategy = c("backwards", "forwards", "eh", 
+    "combined"), calculations = c("subgraph", "diff", "edge", 
+    "clique"), model = FALSE, options = "") 
 {
-    require(CoCo, quietly = TRUE)
+    require(mimR, quietly = TRUE)
     result = NULL
     strategy = match.arg(strategy)
     calculations = match.arg(calculations, several.ok = TRUE)
-    criterion = match.arg(criterion)
-    if (!is.array(data)) 
-        for (i in 1:dim(data)[2]) data[[names(data)[i]]] = as.factor(data[[names(data)[i]]])
-    else {
+    if (is.array(data)) {
         require(epitools, quietly = TRUE)
         if (!length(dimnames(data))) 
             for (i in length(dim(data)):1) dimnames(data)[[i]] = as.character(c(1:dim(data)[i]))
@@ -20,25 +17,28 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
     dimnames(data)[2][[1]] = letters[1:dim(data)[2]]
     length.data = dim(data)[1]
     elements = dimnames(data)[[2]]
-    CoCoObject = makeCoCo()
-    if (criterion == "bic") 
-        optionsCoCo(ic = TRUE, bic = TRUE, object = CoCoObject)
-    else if (criterion == "aic") 
-        optionsCoCo(ic = TRUE, object = CoCoObject)
+    for (i in 1:length(elements)) if (any(LETTERS == elements[i])) 
+        elements[i] = letters[which(LETTERS == elements[i])]
+    for (i in 1:dim(data)[2]) data[[names(data)[i]]] = as.factor(data[[names(data)[i]]])
     if (strategy == "backwards") {
         for (i in 1:N) {
             if (N > 3 && i%%(round(N/4)) == 1) {
                 cat(paste(c("Run number ", i, "\n"), collapse = ""))
                 flush.console()
             }
-            capture.output(enterTable(table(data[sample(length.data, 
-                length.data, replace = TRUE), ]), object = CoCoObject))
+            toMIM(as.gmData(data[sample(length.data, length.data, 
+                replace = TRUE), ]))
             if (model != FALSE) 
-                enterModel(model)
-            else enterModel("*")
-            capture.output(backward(object = CoCoObject, ...))
-            m.name = returnModel("last", split.string = TRUE)
-            m.name = paste(sort(m.name), collapse = ",")
+                mim.cmd(paste(c("Model ", model), collapse = ""))
+            else {
+                mim.cmd("satmod")
+            }
+            mim.text = mim.cmd(paste(c("stepwise ", options), 
+                collapse = ""), look.nice = FALSE)
+            m.name = toString(mim.text[length(mim.text)])
+            m.name = strsplit(m.name, ",")[[1]]
+            m.name = sort(m.name)
+            m.name = paste(m.name, collapse = ",")
             if (!any(names(result) == m.name)) {
                 eval(parse(text = paste("result = c(result,\"", 
                   m.name, "\" = 1)", sep = "")))
@@ -55,20 +55,52 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
                 print(paste(c("Run number ", i), collapse = ""))
                 flush.console()
             }
-            capture.output(enterTable(table(data[sample(length.data, 
-                length.data, replace = TRUE), ]), object = CoCoObject))
+            toMIM(as.gmData(data[sample(length.data, length.data, 
+                replace = TRUE), ]))
             if (model != FALSE) 
-                enterModel(model)
-            else enterModel(".")
-            capture.output(forward(object = CoCoObject, ...))
-            m.name = returnModel("last", split.string = TRUE)
-            m.name = paste(sort(m.name), collapse = ",")
+                mim.cmd(paste(c("Model ", model), collapse = ""))
+            else {
+                mim.cmd("maine")
+            }
+            mim.text = mim.cmd(paste(c("stepwise f", options), 
+                collapse = ""), look.nice = FALSE)
+            m.name = toString(mim.text[length(mim.text)])
+            m.name = strsplit(m.name, ",")[[1]]
+            m.name = sort(m.name)
+            m.name = paste(m.name, collapse = ",")
             if (!any(names(result) == m.name)) {
                 eval(parse(text = paste("result = c(result,\"", 
                   m.name, "\" = 1)", sep = "")))
             }
             else {
                 index = which(names(result) == m.name)
+                result[index] = result[index] + 1
+            }
+        }
+    }
+    else if (strategy == "eh") {
+        for (i in 1:N) {
+            if (N > 3 && i%%(round(N/4)) == 1) {
+                print(paste(c("Run number ", i), collapse = ""))
+                flush.console()
+            }
+            toMIM(as.gmData(data[sample(length.data, length.data, 
+                replace = TRUE), ]))
+            if (model == FALSE) 
+                model = paste(c(paste(letters[1:dim(data)[2]], 
+                  collapse = ","), " - ", paste(letters[1:dim(data)[2]], 
+                  collapse = "")), collapse = "")
+            mim.text = mim.cmd(paste(c("initsearch ", model, 
+                ";startsearch ", options), collapse = ""), look.nice = FALSE)
+            m.name = mim.cmd("ehshow a", look.nice = FALSE, return.look.nice = TRUE)
+            m.name = m.name[1:length(m.name)%%2 == 0]
+            for (j in 1:length(m.name)) if (!any(names(result) == 
+                m.name[j])) {
+                eval(parse(text = paste("result = c(result,\"", 
+                  m.name[j], "\" = 1)", sep = "")))
+            }
+            else {
+                index = which(names(result) == m.name[j])
                 result[index] = result[index] + 1
             }
         }
@@ -81,13 +113,15 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
             }
             sam = data[sample(length.data, length.data, replace = TRUE), 
                 ]
-            capture.output(enterTable(table(sam), object = CoCoObject))
-            enterModel(gm.screening(sam)$model)
-            capture.output(backward(object = CoCoObject, ...))
-            makeBase("last")
-            capture.output(forward(object = CoCoObject, ...))
-            m.name = returnModel("last", split.string = TRUE)
-            m.name = paste(sort(m.name), collapse = ",")
+            toMIM(as.gmData(sam))
+            mim.cmd(paste(c("Model ", gm.screening(sam)$model), 
+                collapse = ""))
+            mim.text = mim.cmd(paste(c("stepwise j", options), 
+                collapse = ""), look.nice = FALSE)
+            m.name = toString(mim.text[length(mim.text)])
+            m.name = strsplit(m.name, ",")[[1]]
+            m.name = sort(m.name)
+            m.name = paste(m.name, collapse = ",")
             if (!any(names(result) == m.name)) {
                 eval(parse(text = paste("result = c(result,\"", 
                   m.name, "\" = 1)", sep = "")))
@@ -98,7 +132,6 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
             }
         }
     }
-    endCoCo()
     if (length(which(calculations == "clique"))) {
         result.clique = NULL
         for (h in 1:length(result)) {
@@ -117,7 +150,6 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
     }
     if (length(which(calculations == "subgraph"))) {
         result.subgraph = NULL
-        dot.flag = 0
         for (h in 1:length(result)) {
             m = strsplit(names(result)[h], "")[[1]]
             dep_table = NULL
@@ -131,7 +163,7 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
                   clique = NULL
                   while (i + j <= length(m) && length(which(elements == 
                     m[i + j])) > 0) {
-                    pos = which(elements == m[i + j])
+                    pos = which(elements == m[i + j])%%27
                     clique = c(clique, pos)
                     j = j + 1
                   }
@@ -192,20 +224,10 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
                 i = i + 1
         }
     }
-    elements = dimnames(data)[[2]]
     if (length(which(calculations == "edge"))) {
         dep.table = matrix(0, nrow = dim(data)[2], ncol = dim(data)[2])
         for (k in 1:length(result)) {
             m = strsplit(names(result)[k], "")[[1]]
-            if (any(m == ":")) {
-                m = strsplit(names(result)[k], ",")[[1]]
-                m = strsplit(m, ":")
-                mm = m[[1]][-(m[[1]] == "")]
-                if (length(m) > 1) 
-                  for (i in 2:length(m)) mm = c(mm, ",", m[[i]][-(m[[i]] == 
-                    "")])
-                m = mm
-            }
             dep.table.i = matrix(0, nrow = dim(data)[2], ncol = dim(data)[2])
             for (i in 1:length(m)) {
                 if (length(which(elements == m[i])) == 0) {
@@ -225,35 +247,26 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
         }
         dimnames(dep.table) = list(elements, elements)
     }
-    if (length(which(calculations == "diff"))) {
-        CoCoObject = makeCoCo()
-        capture.output(enterDataFrame(data))
+    if (strategy != "eh" && length(which(calculations == "diff"))) {
+        toMIM(as.gmData(data))
         if (strategy == "backwards") {
-            if (model != FALSE) 
-                enterModel(model)
-            else enterModel("*")
-            capture.output(backward(object = CoCoObject, ...))
+            mim.text = mim.cmd(paste(c("satmod; stepwise ", options), 
+                collapse = ""), look.nice = FALSE)
+            m.name = toString(mim.text[length(mim.text)])
         }
         else if (strategy == "forwards") {
-            if (model != FALSE) 
-                enterModel(model)
-            else enterModel(".")
-            capture.output(forward(object = CoCoObject, ...))
+            mim.text = mim.cmd(paste(c("maine; stepwise f", options), 
+                collapse = ""), look.nice = FALSE)
+            m.name = toString(mim.text[length(mim.text)])
         }
-        m.name = returnModel("last", split.string = TRUE)
-        m.name = paste(m.name, collapse = ",")
+        else if (strategy == "eh") {
+            mim.text = mim.cmd(paste(c("initsearch; startsearch ", 
+                options), collapse = ""), look.nice = FALSE)
+            m.name = mim.cmd("ehshow a", look.nice = FALSE, return.look.nice = TRUE)
+            m.name = m.name[1:length(m.name)%%2 == 0]
+        }
         result.original = m.name
-        endCoCo()
         m = strsplit(m.name, "")[[1]]
-        if (any(m == ":")) {
-            m = strsplit(m.name, ",")[[1]]
-            m = strsplit(m, ":")
-            mm = m[[1]][-(m[[1]] == "")]
-            if (length(m) > 1) 
-                for (i in 2:length(m)) mm = c(mm, ",", m[[i]][-(m[[i]] == 
-                  "")])
-            m = mm
-        }
         original = matrix(0, nrow = dim(data)[2], ncol = dim(data)[2])
         for (i in 1:length(m)) {
             if (length(which(elements == m[i])) == 0) {
@@ -272,15 +285,6 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
         list.result = list(more = c(NULL), less = c(NULL), abs = c(NULL))
         for (k in 1:length(result)) {
             m = strsplit(names(result)[k], "")[[1]]
-            if (any(m == ":")) {
-                m = strsplit(names(result)[k], ",")[[1]]
-                m = strsplit(m, ":")
-                mm = m[[1]][-(m[[1]] == "")]
-                if (length(m) > 1) 
-                  for (i in 2:length(m)) mm = c(mm, ",", m[[i]][-(m[[i]] == 
-                    "")])
-                m = mm
-            }
             booted = matrix(0, nrow = dim(data)[2], ncol = dim(data)[2])
             for (i in 1:length(m)) {
                 if (length(which(elements == m[i])) == 0) {
@@ -341,7 +345,7 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
             decreasing = TRUE)
     if (length(which(calculations == "edge"))) 
         result$"edge frequencies" = dep.table/summie
-    if (length(which(calculations == "diff"))) {
+    if (strategy != "eh" && length(which(calculations == "diff"))) {
         result$"original model" = result.original
         result$"edge differences" = lapply(list.result, sort, 
             decreasing = TRUE)

@@ -155,7 +155,7 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
             ") grouped by ", dname[3], "(", reference[3], ")", 
             sep = ""), paste(c("Synergy Index with ", conf.level * 
             100, "% C.I."), collapse = ""))
-        OUT <- list(ratio = RR, measure = out.matrix.kxl)
+        OUT <- list(OddsRatio = RR, measure = out.matrix.kxl)
     }
     else {
         CI.cc.lower <- exp(log(overall.S) - z * se.overall.S)
@@ -181,7 +181,7 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
             ") grouped by ", dname[3], "(", reference[3], ")", 
             sep = ""), paste(c("Synergy Index with ", conf.level * 
             100, "% C.I."), collapse = ""))
-        OUT <- list(ratio = RR, covariance = cov.mat, measure = out.matrix.kxl)
+        OUT <- list(OddsRatio = RR, covariance = cov.mat, measure = out.matrix.kxl)
     }
     OUT
 }

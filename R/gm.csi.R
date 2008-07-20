@@ -2,7 +2,6 @@
 function (X, Y, group, data = 0, reference = c(1, 1, 2), pen = NULL, 
     conf.level = 0.95) 
 {
-    require(epitools, quietly = TRUE)
     require(gtools, quietly = TRUE)
     if (!missing(conf.level) && (length(conf.level) != 1 || !is.finite(conf.level) || 
         conf.level < 0 || conf.level > 1)) 
@@ -33,6 +32,7 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), pen = NULL,
         stop("Group variable has more than 2 dimensions.")
     A <- as.vector(table(data[, 1]))
     B <- as.vector(table(data[, 2]))
+    AB <- as.vector(table(data[, c(1, 2)]))
     ifelse(is.null(pen), penetrance <- FALSE, penetrance <- TRUE)
     if (penetrance == FALSE) {
         pen <- tab[, , reference[3]]/(tab[, , 1] + tab[, , 2])
@@ -58,6 +58,8 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), pen = NULL,
             pA <- fA/sum(A)
             ifelse(dim.j > 2, fB <- B[-j], fB <- B)
             pB <- fB/sum(B)
+            ifelse(dim.j > 2, fAB <- AB[-j], fAB <- AB)
+            pAB <- fAB/sum(AB)
             if (is.numeric(i) & is.numeric(j)) {
                 coord <- paste(c(i, j), collapse = ",")
                 coord.pr <- paste(c(-i, -j), ",", sep = "", collapse = "")
@@ -74,70 +76,91 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), pen = NULL,
                 coord <- paste(c("", ""), collapse = ",")
                 coord.pr <- paste(c("", ""), ",", sep = "", collapse = "")
             }
-            D11 <- eval(parse(text = paste(".gm.delta(1,1,", 
-                coord, ",pen,pA,pB)", sep = "")))/eval(parse(text = paste(".gm.delta(1,1,", 
-                coord, ",1-pen,pA,pB)", sep = "")))
-            D12 <- eval(parse(text = paste(".gm.delta(1,2,", 
-                coord, ",pen,pA,pB)", sep = "")))/eval(parse(text = paste(".gm.delta(1,2,", 
-                coord, ",1-pen,pA,pB)", sep = "")))
-            D21 <- eval(parse(text = paste(".gm.delta(2,1,", 
-                coord, ",pen,pA,pB)", sep = "")))/eval(parse(text = paste(".gm.delta(2,1,", 
-                coord, ",1-pen,pA,pB)", sep = "")))
-            D22 <- eval(parse(text = paste(".gm.delta(2,2,", 
-                coord, ",pen,pA,pB)", sep = "")))/eval(parse(text = paste(".gm.delta(2,2,", 
-                coord, ",1-pen,pA,pB)", sep = "")))
+            D11 <- eval(parse(text = paste(".gm.delta2(1,1,", 
+                coord, ",pen*sum(tab),A,B,AB)", sep = "")))/eval(parse(text = paste(".gm.delta2(1,1,", 
+                coord, ",(1-pen)*sum(tab),A,B,AB)", sep = "")))
+            D12 <- eval(parse(text = paste(".gm.delta2(1,2,", 
+                coord, ",pen*sum(tab),A,B,AB)", sep = "")))/eval(parse(text = paste(".gm.delta2(1,2,", 
+                coord, ",(1-pen)*sum(tab),A,B,AB)", sep = "")))
+            D21 <- eval(parse(text = paste(".gm.delta2(2,1,", 
+                coord, ",pen*sum(tab),A,B,AB)", sep = "")))/eval(parse(text = paste(".gm.delta2(2,1,", 
+                coord, ",(1-pen)*sum(tab),A,B,AB)", sep = "")))
+            D22 <- eval(parse(text = paste(".gm.delta2(2,2,", 
+                coord, ",pen*sum(tab),A,B,AB)", sep = "")))/eval(parse(text = paste(".gm.delta2(2,2,", 
+                coord, ",(1-pen)*sum(tab),A,B,AB)", sep = "")))
             Delta <- matrix(c(D11, D21, D12, D22), nrow = 2)
-            d <- matrix(c(eval(parse(text = paste(".gm.delta(1,1,", 
-                coord, ",1-pen,pA,pB)", sep = ""))), eval(parse(text = paste(".gm.delta(2,1,", 
-                coord, ",1-pen,pA,pB)", sep = ""))), eval(parse(text = paste(".gm.delta(1,2,", 
-                coord, ",1-pen,pA,pB)", sep = ""))), eval(parse(text = paste(".gm.delta(2,2,", 
-                coord, ",1-pen,pA,pB)", sep = "")))), nrow = 2)
+            d <- matrix(c(eval(parse(text = paste(".gm.delta2(1,1,", 
+                coord, ",1-pen,pA,pB,pAB)", sep = ""))), eval(parse(text = paste(".gm.delta2(2,1,", 
+                coord, ",1-pen,pA,pB,pAB)", sep = ""))), eval(parse(text = paste(".gm.delta2(1,2,", 
+                coord, ",1-pen,pA,pB,pAB)", sep = ""))), eval(parse(text = paste(".gm.delta2(2,2,", 
+                coord, ",1-pen,pA,pB,pAB)", sep = "")))), nrow = 2)
             csi[index] <- (D11 + D22)/(D12 + D21)
-            pr <- eval(parse(text = paste("tab[", coord.pr, 
-                "]/sum(tab[", coord.pr, "])", sep = "")))
+            pr <- eval(parse(text = paste("tab[", coord.pr, "]/sum(tab[", 
+                coord.pr, "])", sep = "")))
             c1.ar <- array(0, dim = c(2, 2, 2))
-            c1.ar[1, 1, ] <- .gm.var.csi.part1(1, 1,Delta,d,pr)
-            c1.ar[2, 2, ] <- .gm.var.csi.part1(2, 2,Delta,d,pr)
+            c1.ar[1, 1, ] <- .gm.var.csi.part1(1, 1, Delta, d, 
+                pr)
+            c1.ar[2, 2, ] <- .gm.var.csi.part1(2, 2, Delta, d, 
+                pr)
             c2.ar <- array(0, dim = c(2, 2, 2))
-            c2.ar[1, 1, 1] <- .gm.var.csi.part2(1, 1, 1,Delta,d,pr)
-            c2.ar[2, 2, 1] <- .gm.var.csi.part2(2, 2, 1,Delta,d,pr)
-            c2.ar[1, 1, 2] <- .gm.var.csi.part2(1, 1, 2,Delta,d,pr)
-            c2.ar[2, 2, 2] <- .gm.var.csi.part2(2, 2, 2,Delta,d,pr)
+            c2.ar[1, 1, 1] <- .gm.var.csi.part2(1, 1, 1, Delta, 
+                d, pr)
+            c2.ar[2, 2, 1] <- .gm.var.csi.part2(2, 2, 1, Delta, 
+                d, pr)
+            c2.ar[1, 1, 2] <- .gm.var.csi.part2(1, 1, 2, Delta, 
+                d, pr)
+            c2.ar[2, 2, 2] <- .gm.var.csi.part2(2, 2, 2, Delta, 
+                d, pr)
             c3.ar <- array(0, dim = c(2, 2, 2))
-            c3.ar[1, 1, 1] <- .gm.var.csi.part3(1, 1, 1,Delta,d,pr)
-            c3.ar[2, 2, 1] <- .gm.var.csi.part3(2, 2, 1,Delta,d,pr)
-            c3.ar[1, 1, 2] <- .gm.var.csi.part3(1, 1, 2,Delta,d,pr)
-            c3.ar[2, 2, 2] <- .gm.var.csi.part3(2, 2, 2,Delta,d,pr)
+            c3.ar[1, 1, 1] <- .gm.var.csi.part3(1, 1, 1, Delta, 
+                d, pr)
+            c3.ar[2, 2, 1] <- .gm.var.csi.part3(2, 2, 1, Delta, 
+                d, pr)
+            c3.ar[1, 1, 2] <- .gm.var.csi.part3(1, 1, 2, Delta, 
+                d, pr)
+            c3.ar[2, 2, 2] <- .gm.var.csi.part3(2, 2, 2, Delta, 
+                d, pr)
             concor <- c1.ar + c2.ar - csi[index] * c3.ar
             d1.ar <- array(0, dim = c(2, 2, 2))
-            d1.ar[1, 2, 1] <- .gm.var.csi.part3(1, 2, 1,Delta,d,pr)
-            d1.ar[2, 1, 1] <- .gm.var.csi.part3(2, 1, 1,Delta,d,pr)
-            d1.ar[1, 2, 2] <- .gm.var.csi.part3(1, 2, 2,Delta,d,pr)
-            d1.ar[2, 1, 2] <- .gm.var.csi.part3(2, 1, 2,Delta,d,pr)
+            d1.ar[1, 2, 1] <- .gm.var.csi.part3(1, 2, 1, Delta, 
+                d, pr)
+            d1.ar[2, 1, 1] <- .gm.var.csi.part3(2, 1, 1, Delta, 
+                d, pr)
+            d1.ar[1, 2, 2] <- .gm.var.csi.part3(1, 2, 2, Delta, 
+                d, pr)
+            d1.ar[2, 1, 2] <- .gm.var.csi.part3(2, 1, 2, Delta, 
+                d, pr)
             d2.ar <- array(0, dim = c(2, 2, 2))
-            d2.ar[1, 2, 1] <- .gm.var.csi.part4(1, 2, 1,Delta,d,pr)
-            d2.ar[2, 1, 1] <- .gm.var.csi.part4(2, 1, 1,Delta,d,pr)
-            d2.ar[1, 2, 2] <- .gm.var.csi.part4(1, 2, 2,Delta,d,pr)
-            d2.ar[2, 1, 2] <- .gm.var.csi.part4(2, 1, 2,Delta,d,pr)
+            d2.ar[1, 2, 1] <- .gm.var.csi.part4(1, 2, 1, Delta, 
+                d, pr)
+            d2.ar[2, 1, 1] <- .gm.var.csi.part4(2, 1, 1, Delta, 
+                d, pr)
+            d2.ar[1, 2, 2] <- .gm.var.csi.part4(1, 2, 2, Delta, 
+                d, pr)
+            d2.ar[2, 1, 2] <- .gm.var.csi.part4(2, 1, 2, Delta, 
+                d, pr)
             d3.ar <- array(0, dim = c(2, 2, 2))
-            d3.ar[1, 2, 1] <- .gm.var.csi.part2(1, 2, 1,Delta,d,pr)
-            d3.ar[2, 1, 1] <- .gm.var.csi.part2(2, 1, 1,Delta,d,pr)
-            d3.ar[1, 2, 2] <- .gm.var.csi.part2(1, 2, 2,Delta,d,pr)
-            d3.ar[2, 1, 2] <- .gm.var.csi.part2(2, 1, 2,Delta,d,pr)
+            d3.ar[1, 2, 1] <- .gm.var.csi.part2(1, 2, 1, Delta, 
+                d, pr)
+            d3.ar[2, 1, 1] <- .gm.var.csi.part2(2, 1, 1, Delta, 
+                d, pr)
+            d3.ar[1, 2, 2] <- .gm.var.csi.part2(1, 2, 2, Delta, 
+                d, pr)
+            d3.ar[2, 1, 2] <- .gm.var.csi.part2(2, 1, 2, Delta, 
+                d, pr)
             discor <- d1.ar - csi[index] * (d2.ar + d3.ar)
-            var.csi[index] <- sum(pr * (1 - pr) * (concor + discor)^2)/(Delta[1, 
-                2] + Delta[2, 1])^2
+            var.csi[index] <- sum(pr * (1 - pr) * (concor + discor)^2)/(sum(tab) * 
+                (Delta[1, 2] + Delta[2, 1])^2)
         }
     }
-    SE <- sqrt(var.csi)/sqrt(sum(tab))
     nv <- (dim.i - 1) * (dim.j - 1)
-    ci.mat <- matrix(nrow = nv, ncol = 5)
+    ci.mat <- matrix(nrow = nv, ncol = 6)
     for (lauf in 1:nv) {
-        CI.lower <- csi[lauf] - z * SE[lauf]
-        CI.upper <- csi[lauf] + z * SE[lauf]
-        pvalue <- pnorm(-abs(csi[lauf] - 1), mean = 0, sd = SE[lauf])
-        ci.mat[lauf, ] <- c(csi[lauf], SE[lauf], CI.lower, CI.upper, 
-            pvalue)
+        CI.lower <- csi[lauf] - z * sqrt(var.csi)[lauf]
+        CI.upper <- csi[lauf] + z * sqrt(var.csi)[lauf]
+        pvalue <- 2 * pnorm(-abs(csi[lauf] - 1), sd = sqrt(var.csi))
+        ci.mat[lauf, ] <- c(csi[lauf], var.csi[lauf], sqrt(var.csi)[lauf], 
+            CI.lower, CI.upper, pvalue)
     }
     row.name <- vector()
     for (i in seq(1, (dim.i - 1))) {
@@ -149,11 +172,11 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), pen = NULL,
     for (i in 1:dim(row.name)[1]) dim.names = c(dim.names, paste(dname[1], 
         "(", row.name[i, 1], ") ~ ", dname[2], "(", row.name[i, 
             2], ")", sep = ""))
-    dimnames(ci.mat) = list(dim.names, c("estimate", "SE", "lower", 
-        "upper", "p.value"))
+    dimnames(ci.mat) = list(dim.names, c("estimate", "VAR", "SE", 
+        "lower", "upper", "p.value"))
     names(dimnames(ci.mat)) = c(paste(dname[1], "(", reference[1], 
         ") ~ ", dname[2], "(", reference[2], ") grouped by ", 
         dname[3], "(", reference[3], ")", sep = ""), paste(c("Conditional Synergy Index with ", 
         conf.level * 100, "% C.I."), collapse = ""))
-    list(penetrance.ratio = pen/(1 - pen), measure = ci.mat)
+    list(penetrance = pen, measure = ci.mat)
 }
