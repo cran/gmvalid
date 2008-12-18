@@ -9,7 +9,7 @@ function (data, N = 0, Umax = 0.5,
     result <- list()
     result$"original model" = paste(sort(strsplit(boot.out$"original model", 
         ",")[[1]]), collapse = ",")
-    result$"mode model" = boot.out$"bootstrapped models"[1]
+    result$"mode model" = boot.out$"bootstrapped models"[1, ]
     edge.square = 0
     edge.stab = 0
     edges = boot.out$"edge frequencies"
@@ -34,35 +34,21 @@ function (data, N = 0, Umax = 0.5,
     elements = boot.out$"variable names"[, 1]
     original = modelmatrix
     N = sum(boot.out$"edge differences"$abs)
-    for (k in 1:length(boot.out$"bootstrapped models")) {
-        m = strsplit(names(boot.out$"bootstrapped models")[k], 
-            "")[[1]]
-        booted = matrix(0, nrow = dim(modelmatrix)[2], ncol = dim(modelmatrix)[2])
-        for (i in 1:length(m)) {
-            if (length(which(elements == m[i])) == 0) {
-            }
-            else {
-                j = 1
-                while (i + j <= length(m) && length(which(elements == 
-                  m[i + j])) > 0) {
-                  pos1 = which(elements == m[i])
-                  pos2 = which(elements == m[i + j])
-                  booted[pos1, pos2] = 1
-                  j = j + 1
-                }
-            }
-        }
-        diff = as.character(sum(abs(original - booted)))
+    for (k in 1:dim(boot.out$"bootstrapped models")[1]) {
+        diff = as.character(sum(abs(original - .gm.matrixparse(boot.out$"bootstrapped models"[k, 
+            1]))))
         if (length(which(names(differ.result) == diff)) == 0) {
             tmp = names(differ.result)
-            differ.result = c(differ.result, boot.out$"bootstrapped models"[k])
+            differ.result = c(differ.result, as.numeric(boot.out$"bootstrapped models"[k, 
+                2]))
             names(differ.result) = c(tmp, diff)
         }
         else differ.result[which(names(differ.result) == diff)] = differ.result[which(names(differ.result) == 
-            diff)] + boot.out$"bootstrapped models"[k]
+            diff)] + as.numeric(boot.out$"bootstrapped models"[k, 
+            2])
     }
     differ.result = differ.result[order(names(differ.result))]
-    result$"differing edges" = differ.result
+    result$"edge differences" = differ.result
     var.sum = 0
     expect = 0
     for (i in 1:length(differ.result)) {
@@ -72,9 +58,7 @@ function (data, N = 0, Umax = 0.5,
     var.sum = as.numeric(var.sum/(N - 1))
     result$"total possible edges" = sum(1:(dim(edges)[1] - 1))
     result$"model std" = sqrt(var.sum)
-    result$"std/total" = sqrt(var.sum)/sum(1:(dim(edges)[1] - 
-        1))
-    result$"expected edges different" = as.numeric(expect)
+    result$"MED" = as.numeric(expect)
     differ.result = differ.result * N
     ii = 1
     c.interval = 0

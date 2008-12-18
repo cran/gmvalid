@@ -182,8 +182,13 @@ function (pvalue, k, data)
     dimName <- combinations(knodes, 2, letters)
     dimnames(OUT) <- list(1:k, apply(dimName, 1, together))
     MEAN <- apply(OUT, 2, mean, na.rm = TRUE)
-    SE <- apply(OUT, 2, sd, na.rm = TRUE)
+    SE <- apply(OUT, 2, .gm.cv.sd, na.rm = TRUE)
     STATISTIC <- list(mean = MEAN, se = SE, pvalue = OUT)
+}
+`.gm.cv.failwith` <-
+function (default = NULL, f, quiet = FALSE) 
+{
+    function(...) .gm.cv.try_default(f(...), default, quiet = quiet)
 }
 `.gm.cv.joint` <-
 function (pvalue, k, ds, data, conf.level = 0.95, chain = FALSE) 
@@ -197,8 +202,8 @@ function (pvalue, k, ds, data, conf.level = 0.95, chain = FALSE)
     stats <- list()
     test.knodes <- list()
     success <- vector()
-    gm <- matrix(nrow = k, ncol = 3, dimnames = list(1:k, c("selected model", 
-        "number of edges", "success")))
+    gm <- matrix(nrow = k, ncol = 4, dimnames = list(1:k, c("selected model", 
+        "number of edges", "success", "block")))
     knodes <- dim(data)[2]
     dimName <- combinations(knodes, 2, letters)
     edgeName <- apply(dimName, 1, paste, collapse = "")
@@ -219,10 +224,16 @@ function (pvalue, k, ds, data, conf.level = 0.95, chain = FALSE)
         pvalue[is.na(pvalue)] <- 1
         e <- ifelse(pvalue[i, ] > 1 - conf.level, TRUE, FALSE)
         edgeDEL <- names(pvalue[i, ])[e]
-        mim.cmd(eval(setblock), look.nice = FALSE)
-        mim.cmd("satmod", look.nice = FALSE)
         platzhalter <- paste("del ", paste(edgeDEL, col = "", 
             sep = ""), sep = " ")
+        mim.cmd("satmod", look.nice = FALSE)
+        if (length(edgeDEL) != 0) {
+            mim.cmd(eval(platzhalter), look.nice = FALSE)
+        }
+        out.model <- mim.cmd("print", look.nice = FALSE)
+        out.model <- out.model[-(1:grep("is:", out.model))]
+        mim.cmd(eval(setblock), look.nice = FALSE)
+        mim.cmd("satmod", look.nice = FALSE)
         if (length(edgeDEL) != 0) {
             mim.cmd(eval(platzhalter), look.nice = FALSE)
         }
@@ -238,7 +249,8 @@ function (pvalue, k, ds, data, conf.level = 0.95, chain = FALSE)
         model[length(model)] <- model.split[charmatch("a", model.split)]
         model[length(model)] <- strsplit(model[length(model)], 
             ".", fixed = TRUE)[[1]]
-        gm[i, 1] <- paste(model, collapse = " | ")
+        gm[i, 1] <- out.model
+        gm[i, 4] <- paste(model, collapse = " | ")
         test.edges <- strsplit(model[length(model)], NULL)[[1]]
         knode <- setdiff(test.edges, c(".", "a"))
         test.knodes[[i]] <- match(knode, letters)
@@ -260,7 +272,6 @@ function (pvalue, k, ds, data, conf.level = 0.95, chain = FALSE)
                 dimnames(risk[[i]])[[lauf.dim]] <- 1:dim(risk[[i]])[lauf.dim]
             }
             risk.dec[[i]] <- ifelse(risk[[i]] >= 1, 2, 1)
-            risk.dec[[i]][is.na(risk.dec[[i]])] <- 1.5
             for (lauf.dim in length(dim(risk.dec[[i]])):1) {
                 dimnames(risk.dec[[i]])[[lauf.dim]] <- 1:dim(risk.dec[[i]])[lauf.dim]
             }
@@ -299,7 +310,6 @@ function (pvalue, k, ds, data, conf.level = 0.95, chain = FALSE)
             risk[[i]] = array(as.vector(risk[[i]]), dim = dim(risk[[i]]), 
                 dimnames = dimnames(risk[[i]]))
             risk.dec[[i]] <- ifelse(risk[[i]] >= 1, 2, 1)
-            risk.dec[[i]][is.na(risk.dec[[i]])] <- 1.5
             for (lauf.dim in length(dim(risk.dec[[i]])):1) {
                 dimnames(risk.dec[[i]])[[lauf.dim]] <- 1:dim(risk.dec[[i]])[lauf.dim]
             }
@@ -317,7 +327,7 @@ function (pvalue, k, ds, data, conf.level = 0.95, chain = FALSE)
             pred.merge <- merge(df_test, pred.mat, by = names(df_test)[test.knodes[[i]]])
             diff <- abs(as.numeric(pred.merge[[names(df_test)[1]]]) - 
                 pred.merge$pred)
-            gm[i, 3] <- 1 - sum(diff)/length(diff)
+            gm[i, 3] <- 1 - sum(diff, na.rm = TRUE)/length(diff)
             gm[i, 2] <- length(test.knodes[[i]])
             TAB.T <- table(pred.merge[[names(df_test)[1]]], pred.merge$pred)
             TN <- TAB.T[1, 1]
@@ -336,9 +346,11 @@ function (pvalue, k, ds, data, conf.level = 0.95, chain = FALSE)
     }
     success.mat <- matrix(nrow = k, ncol = 2, dimnames = list(gm[, 
         1], c("# edges -> a", "success")))
-    names(dimnames(success.mat)) <- c("selected models", "Success probability")
-    success.mat[, 1] <- as.numeric(gm[, 2])
-    success.mat[, 2] <- as.numeric(gm[, 3])
+    block.mat <- matrix(nrow = k, ncol = 2, dimnames = list(gm[, 
+        4], c("# edges -> a", "success")))
+    names(dimnames(success.mat)) <- c("selected graphs", "Success probability")
+    success.mat[, 1] <- block.mat[, 2] <- as.numeric(gm[, 2])
+    success.mat[, 2] <- block.mat[, 2] <- as.numeric(gm[, 3])
     if (any(!is.na(success.mat[, 2]))) {
         risk = risk[[which.max(success.mat[, 2])]]
         risk.dec = risk.dec[[which.max(success.mat[, 2])]]
@@ -349,19 +361,27 @@ function (pvalue, k, ds, data, conf.level = 0.95, chain = FALSE)
         risk.dec <- NA
         stats <- NA
     }
+    success.mat <- success.mat[order(success.mat[, 2], decreasing = TRUE), 
+        ]
+    block.mat <- block.mat[order(block.mat[, 2], decreasing = TRUE), 
+        ]
     OUT <- list(pvalue = pvalue.bak, ratio = risk, risk = risk.dec, 
-        success = success.mat[order(success.mat[, 2], decreasing = TRUE), 
-            ], statistics = stats)
+        success = success.mat, statistics = stats, chain = chain, 
+        graph = dimnames(block.mat)[[1]][[1]])
 }
+`.gm.cv.sd` <-
+function (...,default = NULL, f, quiet = FALSE) 
+.gm.cv.try_default(f(...), default = default, quiet = quiet)
 `.gm.cv.select` <-
 function (k, ds, data, conf.level = conf.level, strategy = strategy, 
-    option.vector = option.vector) 
+    option.vector = option.vector, show.output = show.output) 
 {
     EOUT <- list()
     POUT <- list()
     for (var.i in 1:dim(data)[2]) {
         data[[names(data)[var.i]]] = as.factor(data[[names(data)[var.i]]])
     }
+    crit.level <- paste("CritLevel ", 1 - conf.level)
     for (i in 1:k) {
         nrows <- dim(data)[2]
         Edges <- matrix(0, nrow = nrows, ncol = nrows, dimnames = list(letters[1:nrows], 
@@ -369,13 +389,16 @@ function (k, ds, data, conf.level = conf.level, strategy = strategy,
         pval <- matrix(NA, nrow = nrows, ncol = nrows, dimnames = list(letters[1:nrows], 
             letters[1:nrows]))
         df_train <- data[unlist(ds[-i]), ]
-        crit.level <- paste("CritLevel ", 1 - conf.level)
-        modelselect <- paste("satmodel; step ", strategy, option.vector)
-        if (strategy == "f") 
+        if (strategy == "f") {
             modelselect <- paste("maine; step ", strategy, option.vector)
+        }
+        else {
+            modelselect <- paste("satmodel; step ", strategy, 
+                option.vector)
+        }
         toMIM(as.gmData.data.frame(df_train))
         mim.cmd(eval(crit.level), look.nice = FALSE)
-        mim.cmd(eval(modelselect))
+        mim.cmd(eval(modelselect), look.nice = show.output)
         model <- mim.cmd("print m", look.nice = FALSE)
         m1 <- strsplit(model[length(model)], ",")[[1]]
         m <- strsplit(m1, NULL)
@@ -403,8 +426,7 @@ function (k, ds, data, conf.level = conf.level, strategy = strategy,
                   platzhalter <- paste("testdel ", paste(tmpM[k, 
                     1], tmpM[k, 2], sep = ""))
                   p1 <- mim.cmd(eval(platzhalter), look.nice = FALSE)
-                  p <- as.numeric(p1[length(p1)])
-                  pval[tmp[1], tmp[2]] <- p
+                  pval[tmp[1], tmp[2]] <- as.numeric(p1[length(p1)])
                 }
                 rm(tmpM)
             }
@@ -417,7 +439,7 @@ function (k, ds, data, conf.level = conf.level, strategy = strategy,
 }
 `.gm.cv.select.chain` <-
 function (k, ds, data, conf.level = conf.level, strategy = strategy, 
-    option.vector = option.vector, chain = chain) 
+    option.vector = option.vector, chain = chain, show.output = FALSE) 
 {
     EOUT <- list()
     POUT <- list()
@@ -467,7 +489,7 @@ function (k, ds, data, conf.level = conf.level, strategy = strategy,
         toMIM(as.gmData.data.frame(df_train))
         mim.cmd(eval(crit.level), look.nice = FALSE)
         mim.cmd(eval(set.chain))
-        mim.cmd(eval(modelselect))
+        mim.cmd(eval(modelselect), look.nice = show.output)
         model <- mim.cmd("print b", look.nice = FALSE)
         model <- model[-(1:grep("is", model))]
         m1 <- model[model != "|"]
@@ -525,6 +547,19 @@ function (k, ds, data, conf.level = conf.level, strategy = strategy,
         mim.cmd("clear")
     }
     OUT <- list(edges = EOUT, pvalue = POUT)
+}
+`.gm.cv.try_default` <-
+function (expr, default = NA, quiet = FALSE) 
+{
+    result <- default
+    if (quiet) {
+        tryCatch(result <- expr, error = function(e) {
+        })
+    }
+    else {
+        try(result <- expr)
+    }
+    result
 }
 `.gm.deleteEdge` <-
 function (data, model, conf.level = 0.95, output = TRUE) 
@@ -677,6 +712,7 @@ function (data, start.model, onestep, headlong, conf.level)
                 model.matrix[selected.edge[1], selected.edge[2]] = 0
                 i = i + 1
             }
+            print(model.matrix)
             model.string = .gm.modelparse(model.matrix)
             model.string <- strsplit(model.string, ",")[[1]]
             start.model = list()

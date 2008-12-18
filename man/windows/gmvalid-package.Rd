@@ -12,7 +12,7 @@ to simulate data sets given a dependence model,
 to analyze discrete graphical models utilizing the MIM program or the CoCo package
 and to quantify associations or interactions.
     
-    Furthermore, a selected graphical model can be validated using the bootstrap and
+    Furthermore, the uncertainty of a selected graphical model can be described using the bootstrap or
 the best prediction model can be evaluated for a dichotomous outcome variable and several discrete influences
 using cross validation.
 }
@@ -20,12 +20,13 @@ using cross validation.
 \tabular{ll}{
 Package: \tab gmvalid\cr
 Type: \tab Package\cr
-Version: \tab 1.1\cr
-Date: \tab 2008-07-20\cr
+Version: \tab 1.2\cr
+Date: \tab 2008-12-18\cr
 License: \tab GPL (>=2) \cr
 }
 
-\item This package requires the packages mimR and CoCo as well as the software MIM that can be downloaded at \url{http://www.hypergraph.dk}.
+\item This package requires the packages grid, epitools, gtools and CoCo.
+\item The package mimR is optional as well as the corresponding software MIM that can be downloaded at \url{http://www.hypergraph.dk}.
 \item The mimR package itself requires the package Rgraphviz that is found in the Bioconductor repository.
 \item Further the packages grid, epitools and gtools are required.
 \item Before using any functions that use MIM make sure that the program is runnning.
@@ -33,10 +34,10 @@ License: \tab GPL (>=2) \cr
 \item For mimR requirements we refer to the package's help page \code{\link[mimR:mimR-package]{mimR}} and its homepage 
       \url{http://gbi.agrsci.dk/~shd/public/mimR/index.html}.
 \item If CoCo calculations fail, please type "endCoCo()" to remove temporary files. 
-\item CoCo crashes occasionally. If you have recurring problems with a specific data set, we suggest to use the MIM-option. Otherwise reboot the Computer.
-\item Model formulas have to be specified according to MIM model formulas or respectively CoCo model formulas.
+\item CoCo crashes occasionally. If you have recurring problems with a specific data set, we suggest to use the MIM-option or to reboot the computer.
+\item Model formulae have to be specified according to MIM model formulas or respectively CoCo model formulae.
 \item To provide a package version that also runs on unix and therefore has no MIM functionalities, we had to put all MIM related examples in
-      "Not Run". But for Windows the examples will work.
+      "Not Run". But for Windows the examples work.
 
 
 }
@@ -63,9 +64,9 @@ License: \tab GPL (>=2) \cr
   Journal of Statistical Software, 6(4).
  
   > CSI \cr
-  Foraita R (2007) 
+  Foraita R (2008) 
   \emph{A conditional synergy index to assess biological interaction.}
-  Working Paper. Please send an e-mail to \email{foraita@bips.uni-bremen.de}.
+  \url{http://nbn-resolving.de/urn:nbn:de:gbv:46-diss000111139}
 
 }
 \note{

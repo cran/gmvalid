@@ -1,44 +1,46 @@
 \name{gm.boot.mim}
 \alias{gm.boot.mim}
-\title{ Graphical model validation using the bootstrap (MIM). }
+\title{ Graphical model validation using the bootstrap (MIM) }
 \description{
   Validates a discrete undirected graphical model using the bootstrap.
-  To achieve that the program MIM is used.
   Relative frequencies of the bootstrapped models, cliques or edges are counted.
+  Make sure that MIM is running.
 }
 \usage{
 gm.boot.mim(N, data, strategy = c("backwards", "forwards", "eh", "combined"),
-            calculations = c("subgraph", "diff", "edge", "clique"),
+            calculations = c("diff", "edge", "clique"),
             model = FALSE, options = "")
 }
 \arguments{
   \item{N}{ Number of bootstrap replications. }
-  \item{data}{ Data frame or a table (array). Variables should have names, \code{data} has to be discrete. }
-  \item{strategy}{ Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default.
-                    "forwards" adds significant edges, starting from the main effects model. The "Edwards-Havranek"
+  \item{data}{ Data frame or array. Variables need to be discrete and should have names. }
+  \item{strategy}{ Type of model selection. "backwards" eliminates not significant edges, starting from the saturated model as default.
+                    "forwards" adds significant edges, starting from the main effects model. The "eh" ("Edwards-Havranek")
                     model search rejects complete models in every step and finishes with one or more accepted models.
                     The "combined" strategy is a 3 step procedure: \code{\link{gm.screening}}, "backwards" and then "forwards".
                     The default strategy is "backwards". Selections may be abbreviated.
                      }
-  \item{calculations}{ String vector specifying the analysis methods. "subgraph", "clique" and "edge" show the frequency of occurence 
-                        in all selected models of the bootstrap samples, while "diff" counts the differences
-                        in the bootstrap replications compared to the edges selected from the original data set.
+  \item{calculations}{ String vector specifying the analysis methods; "clique" and "edge" show the frequency of occurence 
+                        in all selected models of the bootstrap samples, while "diff" counts the edge differences
+                        of the bootstrap replications compared to the edges selected from the original data set.
                         The frequency of the selected models of all bootstrap samples are always calculated. By default all calculations are done.
                         Selections may be abbreviated.
-                         }
-  \item{model}{ Character string specifying a start model for "backwards" and "forwards" selection procedure.
+                     }
+  \item{model}{ Character string to specify a start model for "backwards" or "forwards" selection procedures.
                 For the "eh" procedure a minimal and a maximal model has to be assigned in one string
-                connected with a " - " (see Example). For "combined" the model cannot be given, a start model will be specified by \code{\link{gm.screening}}.
+                connected with " - " (see Example). For "combined" the model cannot be given, a start model 
+                will be specified by \code{\link{gm.screening}}.
                 The model formula has to start with the first lowercase letters of the alphabet, e.g. "abc,cde". 
                 Variable names cannot be given.
                  }
-  \item{options}{ Optional character string specifying further options for the search strategy. Possible options can be found in the MIM help searching for
+  \item{options}{ Optional character string to specify further options for the search strategy. 
+                  Possible options can be found in the MIM help searching for
                     "stepwise" (backwards, forwards) or "startsearch" (eh).  See \code{details}.
                     }
 }
 \details{
   This function uses a nonparametric bootstrap.\cr
-  For your information about the advancements of the bootstrap, some run numbers will be displayed.
+  For your information about the advancements of the bootstrap, some run numbers are displayed.
   
   MIM options for stepwise procedures (backwards, forwards):\cr
   "A" - uses the AIC as selection criterion\cr
@@ -54,18 +56,16 @@ gm.boot.mim(N, data, strategy = c("backwards", "forwards", "eh", "combined"),
 }
 \value{
 A list containing:
-  \item{"bootstrapped models" }{ Relative frequency vector of selected models with model formulas as categories. }
-  \item{"bootstrapped subgraphs" }{ Relative frequencies vector of subgraphs that equals cliques or parts of a clique.
-                                    Returned if calculation "subgraph" is selected.
+  \item{"bootstrapped models" }{ Matrix with the selected models in first column and their selection frequency in the second. }
+   \item{"bootstrapped cliques" }{ Relative frequenciy vector of selected cliques. Returned if calculation "clique" is selected.
                                      }
-   \item{"bootstrapped cliques" }{ Relative frequencies vector selected cliques. Returned if calculation "clique" is selected.
-                                     }
-   \item{"edge frequencies"}{ Matrix with relative frequencies of the edges. Returned if calculation "edge" is selected. }
-   \item{"original model"}{ Character string giving the selected model using the original unsampled data. Returned if calculation "diff" is selected. }
-   \item{"edge differences"}{ List with frequencies of more, less and absolutely different edges (See argument \code{calculations}.
+   \item{"edge frequencies"}{ Matrix of relative edge frequencies. Returned if calculation "edge" is selected. }
+   \item{"original model"}{ Character string of selected model using the original unsampled data. Returned if calculation "diff" is selected. }
+   \item{"edge differences"}{ List of frequencies of more, less and by absolute value different edges (See argument \code{calculations}.
                                                 Sorted by occurence.
                                                 Returned if calculation "diff" is selected. }
-  \item{"variable names"}{ Matrix that assigns a letter to each variable that is used in the model formulas. }
+  \item{"replications"}{ Number of bootstrap replications. }
+  \item{"variable names"}{ Matrix that assigns a letter to each variable that is used in the model formulae. }
 }
 \references{ Efron B, Tibshirani RJ (1993) 
             \emph{An Introduction to the Bootstrap.}
@@ -84,14 +84,13 @@ A list containing:
 \note{ The function requires the MIM program.
         Make sure that it is running before using the function.\cr 
         The package mimR will only work properly if your R working directory path 
-        does not contain hyphens ("-"). For mimR requirements we refer to the package's help page \code{\link[mimR:mimR-package]{mimR}} and its homepage 
-        \url{http://gbi.agrsci.dk/~shd/public/mimR/index.html}. mimR needs the Rgraphviz package. Therefore you will have to add "Bioconductor" to your R repositories.\cr
-        Running this function may take a while. A bootstrap with
-        data of size 10.000 times 8 and 1.000 replications may take the computer about 4 minutes.
+        does not contain hyphens ("-"). For mimR requirements we refer to the package's 
+        help page \code{\link[mimR:mimR-package]{mimR}} and its homepage 
+        \url{http://gbi.agrsci.dk/~shd/public/mimR/index.html}. mimR requires the Rgraphviz package. 
+        Therefore you need to add "Bioconductor" to your R repositories.\cr
         
-        The time the EH-strategy needs depends on the number of variables.
-        The total number of possible models doubles with each additional variable. Also different data sets of
-        the same size may take a lot different amount of time. We recommend the EH strategy up to 8 variables.\cr
+        The EH-strategy is very time consuming. This depends on the number of variables, since
+        the total number of possible models doubles with each additional variable.
 }
 \seealso{ \code{\link{gm.boot.coco}}, \code{\link{gm.screening}} }
 \examples{

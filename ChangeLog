@@ -1,3 +1,29 @@
+gmvalid 1.2
+-----------
+
+New features:
+
+- In gm.boot.coco: number of replications is now returned
+
+Bug fixes:
+
+- In gm.boot.coco/mim: 
+  "bootstrapped models" is now matrix with columns model and frequency,
+  so model names longer than 256 characters can now be displayed
+  "original model" is now selected same as bootstrap samples
+- In gm.si:
+  Bug in formula for the synergy index for cohort design fixed
+
+Other changes:
+
+- In gm.boot.coco/mim and gm.validation: 
+  consistent naming of "edge differences"
+- In gm.boot.coco/mim: 
+  "subgraph" calculation removed (inefficient, no sensible results)
+- In gm.cv:
+  Selected graphs are now written in clique structure and not in MIM output form
+
+
 gmvalid 1.1
 -----------
 

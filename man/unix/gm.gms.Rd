@@ -3,43 +3,43 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Graphical model selection for nominal / ordinal data using Goodman's and Kruskal's Gamma. }
 \description{
-  Selects a graphical model forwards or backwards in one or more steps using the
+  Selection strategy for a graphical model. Searches forwards or backwards in one or more steps using the
   conditional gamma coefficient impelemented in \code{\link{gm.gamma}}.
 }
 \usage{
-gm.gms(data, strategy = c("backwards", "forwards", "combined"), model = FALSE, onestep = FALSE,
-       headlong=FALSE, conf.level = 0.95)
+gm.gms(data, strategy = c("backwards", "forwards", "combined"), model = FALSE, onestep = FALSE, headlong = FALSE, conf.level = 0.95)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{ Data frame or table (array). Variables should have names. \code{data} has to be discrete. }
-  \item{strategy}{ Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default.
-                    "forwards" adds significant edges, starting from the main effects model. 
+  \item{data}{ Data frame or array. Variables need to be discrete and should have names. }
+  \item{strategy}{ Type of model selection. "backwards" eliminates not significant edges, starting from the saturated model as default.
+                    "forwards" adds significant edges, starting from the main effects model.
                     The "combined" strategy is a 3 step procedure: \code{\link{gm.screening}}, "backwards" and then "forwards".
                     The default strategy is "backwards". Selections may be abbreviated.
                      }
-  \item{model}{ Character string specifying a start model for "backwards" and "forwards" selection procedure.
-                The model formulae has to start with the first lowercase letters of the alphabet, e.g. "abc,cde". Variable names cannot be given.
+  \item{model}{ Character string to specify a start model for "backwards" or "forwards" selection procedures.
+                For "combined" the model cannot be given, a start model 
+                will be specified by \code{\link{gm.screening}}.
+                The model formula has to start with the first lowercase letters of the alphabet, e.g. "abc,cde". 
+                Variable names cannot be given.
                  }
   \item{onestep}{ If TRUE all edges associated with a p-value < 1 - conf.level / p-value > 1 - conf.level will be added / removed
                   in one step. If FALSE only one edge will be added / removed in each step. }
-  \item{headlong}{ If TRUE the edges are visited in random order and the first (in)significant is removed / added. Helps to avoid making the
-                    easiest decisions about edges in the first steps and later not being able to make hard decisions and the model ends up having
-                    too many edges. If FALSE in every step the edge with the highest / lowest p-value is removed / added.
+  \item{headlong}{ If TRUE edges are visited in random order and the first (in)significant is added / eliminated.
+                   If FALSE in every step the edge with the highest / lowest p-value is eliminated / added.
                     Only working for \code{onestep} FALSE.
                     }
   \item{conf.level}{ See \code{\link{gm.gamma}}. }
 }
 \details{
-  For every two-variable association the conditional gamma coefficient (in case of no other dependencies the marginal gamma),
-  the standard deviation and the p-value is calculated from the data. Backwards the association with the smallest p-value is kicked
-  out in every step. Forwards the highest is included until there are no more significances. In the one-step procedure all (in-)
-  significant are added / deleted at once, where the basis is the marginal / saturated model while when doing more steps the base model
-  is always the one from the previous step.
+  For every two-variable association the conditional gamma coefficient,
+  the standard error and the p-value is calculated from the data. In the one-step procedure all (in-)
+  significant edges are added / deleted at once, where the basis is the main effects / saturated model while when doing more steps the base model
+  is always the selected model from the previous step.
 }
 \value{
   \item{measure }{ A list of matrices with the output of gm.gamma for all cliques in the selected model. }
-  \item{model }{ The selected model in a string. }
+  \item{model }{ Srting of selected model. }
 }
 \references{
   Davis JA (1967) 

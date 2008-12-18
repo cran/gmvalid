@@ -7,11 +7,11 @@
 }
 \usage{
 gm.cv(k, data, outcome=1, strategy = c("backwards", "forwards"),
-        chain = FALSE, options="", conf.level = 0.95)
+        chain = FALSE, options="", conf.level = 0.95, show.output = FALSE)
 }
 \arguments{
-  \item{k}{ Number of folds the data should be split into in order to estimate the success of prediction in the cross validation. }
-  \item{data}{ Data frame or a table (array). Variables should have names, \code{data} has to be discrete. }
+  \item{k}{ Number of folds the data is being split into to estimate the success of prediction in the cross validation. }
+  \item{data}{ Data frame or array. Variables need to be discrete and should have names. }
   \item{outcome}{ Variable index of the outcome variable. Default is 1.}
   \item{strategy}{ Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default.
                     "forwards" adds significant edges, starting from the main effects model. 
@@ -20,10 +20,11 @@ gm.cv(k, data, outcome=1, strategy = c("backwards", "forwards"),
   \item{chain}{ Character string to specify the block structure of directed graphical models.
                 The syntax is "vs1|vs2|vs3" where vs1,vs2,vs3 are sets of variables and the variables in vs1 are prior to those in vs2 etc. Otherwise the model will be undirected. 
                 Only lowercase letters are allowed!}
-  \item{options}{ Character string specifying further options for the search strategy. Possible options can be found in the MIM help when searching for
+  \item{options}{ Character string to specify further options for the search strategy. Possible options can be found in the MIM help when searching for
                     "stepwise" (backwards, forwards) or "startsearch" (eh).  See \code{details}.
   }
   \item{conf.level}{ Confidence level of the interval (default is 0.95). }
+  \item{show.output}{ Logical. logical. If TRUE then the output of the selection procedure is printed out of MIM. }
 }
 \details{
   Outcome variable must be the first in \code{data}, categorized as 
@@ -32,7 +33,7 @@ gm.cv(k, data, outcome=1, strategy = c("backwards", "forwards"),
   The procedure is as follows
   
   1. Data Processing:\cr
-     The data set is splitted into k folds
+     The data set is splitted into k folds.
   
   2. Model Selection:\cr
      A model is selected using the observations from k - j-th folds, j=1,...,k.
@@ -59,11 +60,11 @@ gm.cv(k, data, outcome=1, strategy = c("backwards", "forwards"),
 }
 \value{
 A list containing:
-  \item{ pvalue }{ Matrix of the calculated p-values in each fold for each edge obtained by the model selection. 
+  \item{ pvalue }{ Matrix of p-values for each edge in each fold. 
                   NA's mark missing edges. }
   \item{ ratio }{ Ratio table (see details, step (3)) for the best prediction model. }
   \item{ risk }{ Risk table (see details, step (3)) for the best prediction model. }
-  \item{ success }{ Matrix with the best prediction models in each fold, the number of edges that point
+  \item{ success }{ Matrix containing the best prediction models of each fold, the number of edges that point
                    to the outcome variable and the probability of successful prediction (see details, step (4)). 
                    The initial blockstructure in the prediction step is: "variable set of influences | outcome variable".   
                    A given \code{chain} is only used during the model selection step.                   
@@ -100,13 +101,14 @@ Therefore you will have to add "Bioconductor" to your R repositories.
 }
 \seealso{ \code{\link{gm.mim}} }
 \examples{
-  ### Examples work!
+  ### Examples work under Windows (but not under Unix)
 \dontrun{
   ABC <- gm.modelsim(500,"ABC,CD")
   out <- gm.cv(5,data=ABC, strategy="b", options="b")
   out
   
   ### DAG using a stepwise selection that joggles between backward and forward
+  ### The direction of the chain is: d -> b -> c -> a
   out.dag <- gm.cv(3,data=ABC,option="j",chain="d|b|c|a")  
   
   ### Chain graph using BIC as selection criteria and allowing for 
@@ -114,8 +116,8 @@ Therefore you will have to add "Bioconductor" to your R repositories.
   cg <- gm.modelsim(1000,"ABD,BCE")  
   out.cg <- gm.cv(3,data=cg,option="bu",chain="cb|de|a")
   }
-  ### Examples really do not run!
-  \dontrun{gm.cv(3,data=ABC,chain="DBD|A") # you have to use lowercase letters
+  ### Examples work neither under Windows nor Unix
+  \dontrun{gm.cv(3,data=ABC,chain="DBD|A")  # you have to use lowercase letters
             gm.cv(3,data=ABC,chain="dca|b") # a is supposed to be outcome variable 
                                   # and thus have to be in the very right block    
             }

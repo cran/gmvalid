@@ -10,18 +10,19 @@ gm.mim(data, strategy = c("backwards", "forwards", "eh", "combined"),
         model = FALSE, chain = FALSE, options = "", tests = FALSE)
 }
 \arguments{
-  \item{data}{ Data frame or a table (array). Variables should have names. \code{data} has to be discrete. }
-  \item{strategy}{ Type of model selection. "backwards" searches for not significant edges to delete, starting from the saturated model as default.
-                    "forwards" adds significant edges, starting from the main effects model. The "Edwards-Havranek"
+  \item{data}{ Data frame or array. Variables need to be discrete and should have names. }
+  \item{strategy}{ Type of model selection. "backwards" eliminates not significant edges, starting from the saturated model as default.
+                    "forwards" adds significant edges, starting from the main effects model. The "eh" ("Edwards-Havranek")
                     model search rejects complete models in every step and finishes with one or more accepted models.
                     The "combined" strategy is a 3 step procedure: \code{\link{gm.screening}}, "backwards" and then "forwards".
                     The default strategy is "backwards". Selections may be abbreviated.
                      }
-  \item{model}{ Character string specifying a start model for "backwards" and "forwards" selection procedure.
+  \item{model}{ Character string to specify a start model for "backwards" or "forwards" selection procedures.
                 For the "eh" procedure a minimal and a maximal model has to be assigned in one string
-                connected with a " - " (see Example). The model formulae has to start with the first lowercase letters of the alphabet, e.g. "abc,cde".
+                connected with " - " (see Example). For "combined" the model cannot be given, a start model 
+                will be specified by \code{\link{gm.screening}}.
+                The model formula has to start with the first lowercase letters of the alphabet, e.g. "abc,cde". 
                 Variable names cannot be given.
-                For "combined" the model cannot be given, a start model will be specified by \code{\link{gm.screening}}.
                  }
   \item{chain}{ Character string to specify the block structure of directed graphical models.
                 The syntax is "vs1|vs2|vs3" where vs1,vs2,vs3 are sets of variables and the variables in vs1 are prior to those in vs2 etc.
@@ -31,7 +32,7 @@ gm.mim(data, strategy = c("backwards", "forwards", "eh", "combined"),
   \item{options}{  Character string specifying further options for the search strategy. Possible options can be found in the MIM help when searching for
                     "stepwise" (backwards, forwards) or "startsearch" (eh).  See \code{details}.
                     }
-  \item{tests}{ If true all accepted and rejected models are tested against the saturated model and p-values to all edges are returned. }
+  \item{tests}{ If TRUE, all accepted and rejected models are tested against the saturated model, p-values to all edges are returned. }
 }
 \details{
   MIM options for stepwise procedures (backwards, forwards):\cr
@@ -49,14 +50,14 @@ gm.mim(data, strategy = c("backwards", "forwards", "eh", "combined"),
 }
 \value{
 A list containing:
-  \item{"accepted" }{ String vector of the accepted model(s). }
-  \item{"rejected" }{ String vector of the rejected model(s). }
-  \item{"base"}{ Character string with the base model the selection started with. NA for "eh". }
+  \item{"accepted" }{ String vector of accepted model(s). }
+  \item{"rejected" }{ String vector of rejected model(s). }
+  \item{"base"}{ Character string of model the selection starts with. NA for "eh". }
   \item{"strategy"}{ Character string indicating what type of selection strategy was performed. }
   \item{"tests against saturated"}{ Matrix giving the test results of the accepted and the rejected models against the saturated model.
                                     Only returned if \code{tests} is TRUE.
    }
-  \item{"p values"}{ Upper-tri matrix with p-values of those edges in the accepted models. NA if edge is misseing.
+  \item{"p values"}{ Upper-tri matrix of p-values of those edges in accepted models. NA if edge is misseing.
                     Only returned if \code{tests} is TRUE.
                      }
   \item{"variable names"}{ Matrix that assigns a letter to each variable that is used in the model formulas. }
@@ -77,9 +78,8 @@ A list containing:
         \url{http://gbi.agrsci.dk/~shd/public/mimR/index.html}. mimR needs the Rgraphviz package.
         Therefore you will have to add "Bioconductor" to your R repositories.
         
-        The time the EH-strategy needs depends on the number of variables.
-        The total number of possible models doubles with each additional variable. Also different data sets of
-        the same size may take a lot different amount of time. We recommend the EH strategy up to 8 variables.\cr
+        The EH-strategy is very time consuming. This depends on the number of variables, since
+        the total number of possible models doubles with each additional variable.
 }
 \seealso{ \code{\link{gm.coco}} }
 \examples{

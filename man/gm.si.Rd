@@ -15,7 +15,7 @@ gm.si(X,Y,group,data=0,reference=c(1,1,2),conf.level = 0.95)
                 \code{data} or as vector.}
   \item{data}{ Data frame or table. }
   \item{reference}{ Vector to define the \code{reference} categories of \code{X}, \code{Y} and \code{group}.
-                     By default, 2 is the reference category for group.}
+                     By default, 2 is the reference category for \code{group}.}
   \item{conf.level}{ Confidence level of the interval (default is 0.95). }
 }
 \details{
@@ -33,8 +33,8 @@ an overall synergy index.
 }
 \value{
 A list containing:
-  \item{ratio }{A rate ratio table, more precise [P( group=reference,X,Y ) / P( group=NOT reference,X,Y )] / [min(P( group=reference,X,Y ) / P( group=NOT reference,X,Y ))] }
-  \item{covariance}{Covariances matrix of the single synergy indices. 
+  \item{OddsRatio }{A odds ratio table. }
+  \item{covariance}{Covariance matrix for category specific synergy indices.
                     Not written if \code{X} or \code{Y} are binary.}
   \item{measure }{Matrix containing the estimate(s), standard deviation(s), 
                   confidence interval(s) and p-value(s). Figures in brackets show the
@@ -61,7 +61,7 @@ A list containing:
    }
 \note{ 
   It can occur that certain combinations of categories lead to a negative synergy indices.
-  In that case no confidence intervals can be computed. If so, use the \code{reference} option
+  In that case confidence intervals cannot be computed. If so, use the \code{reference} option
   to re-order the categories of the variable(s) in question (see example below).
 } 
 \seealso{ \code{\link{gm.csi}} }

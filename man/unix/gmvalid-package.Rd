@@ -12,7 +12,7 @@ to simulate data sets given a dependence model,
 to analyze discrete graphical models utilizing the CoCo package
 and to quantify associations or interactions.
     
-    Furthermore, a selected graphical model can be validated using the bootstrap and
+    Furthermore, the uncertainty of a selected graphical model can be described using the bootstrap or
 the best prediction model can be evaluated for a dichotomous outcome variable and several discrete influences
 using cross validation.
 }
@@ -20,15 +20,15 @@ using cross validation.
 \tabular{ll}{
 Package: \tab gmvalid\cr
 Type: \tab Package\cr
-Version: \tab 1.1\cr
-Date: \tab 2008-07-20\cr
+Version: \tab 1.2\cr
+Date: \tab 2008-12-18\cr
 License: \tab GPL (>=2) \cr
 }
 
-\item Further the packages grid, epitools and gtools are required.
+\item This package requires the packages grid, epitools, gtools and CoCo.
 \item If CoCo calculations fail, please type "endCoCo()" to remove temporary files. 
-\item CoCo crashes occasionally. If you have recurring problems with a specific data set, we suggest rebooting the Computer.
-\item Model formulas have to be specified according to CoCo model formulas.
+\item CoCo crashes occasionally. If you have recurring problems with a specific data set, we suggest to reboot the computer.
+\item Model formulae have to be specified according to CoCo model formulae.
 
 
 }
@@ -45,9 +45,9 @@ License: \tab GPL (>=2) \cr
   Journal of Statistical Software, 6(4).
  
   > CSI \cr
-  Foraita R (2007) 
+  Foraita R (2008) 
   \emph{A conditional synergy index to assess biological interaction.}
-  Working Paper. Please send an e-mail to \email{foraita@bips.uni-bremen.de}.
+  \url{http://nbn-resolving.de/urn:nbn:de:gbv:46-diss000111139}
 
 }
 \note{
@@ -62,7 +62,7 @@ License: \tab GPL (>=2) \cr
 \keyword{ graphs }
 \keyword{ htest }
 \seealso{
- \code{ \code{\link[CoCo:CoCo-package]{CoCo}} }
+ \code{ \link[CoCo:CoCo-package]{CoCo} }
 }
 \examples{
     ### Generates a data frame given a dependence model

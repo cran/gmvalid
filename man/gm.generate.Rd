@@ -1,8 +1,8 @@
 \name{gm.generate}
 \alias{gm.generate}
-\title{ Random data frames of binary variables with given marginals }
+\title{ Random data frames of binary variables given fixed marginals }
 \description{
-  Generates a random data frame of independent binary variables with given marginals.
+  Generates a random data frame of independent binary variables given fixed marginals.
 }
 \usage{
 gm.generate(N, p = c(0.5, 0.5, 0.5))

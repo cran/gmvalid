@@ -1,8 +1,8 @@
 \name{gm.sim.ixj}
 \alias{gm.sim.ixj}
-\title{ Random (i x j)-way dependency tables with given marginals }
+\title{ Random (i x j)-way dependency table with given marginals }
 \description{
-    Generates random (i x j)-way dependency tables with given marginals.
+    Generates random (i x j)-way dependency table with given marginals.
 }
 \usage{
 gm.sim.ixj(N, pa, pb)

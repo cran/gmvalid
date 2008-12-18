@@ -3,7 +3,7 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Model Screening }
 \description{
-  Preliminary model search procedure for categorial data in three steps, using 
+  Preliminary model search procedure for categorical data in three steps, using 
   Goodman's and Kruskal's gamma and chi-squared tests.
 }
 \usage{
@@ -11,21 +11,23 @@ gm.screening(data, conf.level = 0.95)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{data}{Data frame or a table (array). Variables should have names, \code{data} has to be discrete. }
-  \item{conf.level}{ Confidence level for tests on independence. }
+  \item{data}{Data frame or array. Variables need to be discrete and should have names. }
+  \item{conf.level}{ Confidence level (default is 0.95). }
 }
 \details{
-  The initial screening divides into three parts. In the first part edges are added to the main effects model, 
-  if the marginal gamma coefficient or the chi-squared statistic are significant. In the second part an edge is 
-  added between two variables, if at least one of the conditional gamma
-  coefficient and the conditional chi-squared statistic is significant 
-  for any possible variable in condition. In the third part all triples of variables that build
+  The initial model screening divides into three parts:
+  (1) An edge is added to the main effects model, 
+  if the marginal gamma coefficient or the chi-squared statistic is significant. 
+  (2) An edge is added between two vertices, if either the conditional gamma
+  coefficient or the conditional chi-squared statistic is significant 
+  for the two variables given any possible variable in condition. 
+  (3) All triplets of variables whose vertices build
   a complete subgraph are tested for removal using the conditional gamma coefficient and conditional chi-squared statistic. 
   An edge is removed if the corresponding p-value is larger than 1 - \code{conf.level}. 
 }
 \value{
   \item{ mat }{ Adjacency matrix of the screened model. }
-  \item{ model }{ String of the screened model. }
+  \item{ model }{ String of the graphical model. }
 }
 \references{ 
     Kreiner S and Edwards D (1983)
@@ -47,7 +49,9 @@ gm.screening(data, conf.level = 0.95)
   (BIPS)  \url{http://www.bips.uni-bremen.de}
    }
 \note{ 
-  It is advised to select a model after screening based on a backwards and forwards selection
+  The model screening is not a model selection strategy! It 'just' searches for a good 
+  start model to initialize a model selection. Common usage is to select 
+  a model after screening based on a backwards and forwards selection
   as implemented in \code{\link{gm.coco}}.
 }
 \seealso{ \code{\link[CoCoRaw]{backward}}, \code{\link{gm.coco}}, \code{\link{gm.chi}}, \code{\link{gm.gamma}} }

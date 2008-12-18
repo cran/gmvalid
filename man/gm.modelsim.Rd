@@ -1,8 +1,8 @@
 \name{gm.modelsim}
 \alias{gm.modelsim}
-\title{ Random data frames with given dependence model and marginals }
+\title{ Random data frames with given dependence model and fixed marginals }
 \description{
-    Generates a random data frame of discrete variables with a given dependence model and marginals.
+    Generates a random data frame of discrete variables given a dependence model and marginals.
 }
 \usage{
     gm.modelsim(N, model, categories = 0)
@@ -22,13 +22,13 @@
     to the number of variables used in \code{model}. 
 }
 \author{ 
-    Ronja Foraita, Fabian Sobotka \cr
+  Ronja Foraita, Fabian Sobotka \cr
   Bremen Institute for Prevention Research and Social Medicine \cr
   (BIPS)  \url{http://www.bips.uni-bremen.de}
  }
 \note{ 
     Observed marginal probabilities reflect the given marginal probabilites only approximatively.
-    Works best with population sizes over N=10,000.
+    Works best with large sample sizes, like e.g. N=10,000.
 }
 \seealso{ \code{\link{gm.generate}}, \code{\link{gm.sim.ixj}}, \code{\link{r2dtable}} }
 \examples{

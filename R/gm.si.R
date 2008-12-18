@@ -24,50 +24,52 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
         data = data.frame(X, Y, group)
     }
     dname = dimnames(data)[[2]]
-    S.ij <- function(i, j) (RR[i, j] - 1)/(RR[i, 1] + RR[1, j] - 
+    S.ij <- function(i, j) (OR[i, j] - 1)/(OR[i, 1] + OR[1, j] - 
         2)
-    variance.RR <- function(i, j, tab) {
+    S.co <- function(i, j) (RR[i, j] - 1)/(RR[i, 1] + RR[1, j] - 
+        2)
+    variance.OR <- function(i, j, tab) {
         bd <- 1/tab[1, 1, 1] + 1/tab[1, 1, 2]
-        var.RR[i, j] <- RR[i, j]^2 * (bd + 1/tab[i, j, 1] + 1/tab[i, 
+        var.OR[i, j] <- OR[i, j]^2 * (bd + 1/tab[i, j, 1] + 1/tab[i, 
             j, 2])
     }
     cov.1 <- function(i, j, k, l) if (i == k & j == l) 
-        var.RR[i, j]
-    else RR[i, j] * RR[k, l] * bd
-    cov.2 <- function(i, j, k, l) RR[i, j] * (RR[k, 1] + RR[1, 
+        var.OR[i, j]
+    else OR[i, j] * OR[k, l] * bd
+    cov.2 <- function(i, j, k, l) OR[i, j] * (OR[k, 1] + OR[1, 
         l]) * bd
-    cov.3 <- function(i, j, k, l) RR[k, l] * (RR[i, 1] + RR[1, 
+    cov.3 <- function(i, j, k, l) OR[k, l] * (OR[i, 1] + OR[1, 
         j]) * bd
     cov.4 <- function(i, j, k, l) cov.1(1, j, 1, l) + cov.1(1, 
         j, k, 1) + cov.1(i, 1, 1, l) + cov.1(i, 1, k, 1)
     se.S <- function(i, j) {
-        sqrt((var.R[i, j] + var.R[1, 1])/(R[i, j] - R[1, 1])^2 + 
-            (var.R[1, j] + var.R[i, 1] + 4 * var.R[1, 1])/(R[1, 
-                j] + R[i, 1] - 2 * R[1, 1])^2 - 4 * var.R[1, 
-            1]/((R[i, j] - R[1, 1]) * (R[i, 1] + R[1, j] - 2 * 
-            R[1, 1])))
+        sqrt((var.RR[i, j] + var.RR[1, 1])/(RR[i, j] - RR[1, 
+            1])^2 + (var.RR[1, j] + var.RR[i, 1] + 4 * var.RR[1, 
+            1])/(RR[1, j] + RR[i, 1] - 2 * RR[1, 1])^2 - 4 * 
+            var.RR[1, 1]/((RR[i, j] - RR[1, 1]) * (RR[i, 1] + 
+            RR[1, j] - 2 * RR[1, 1])))
     }
     se.cc.S <- function(i, j) {
-        sqrt(var.RR[i, j]/(RR[i, j] - 1)^2 + (var.RR[1, j] + 
-            var.RR[i, 1] + 2 * cov.1(1, 2, 2, 1))/(RR[1, j] + 
-            RR[i, 1] - 2)^2 - 2 * cov.2(2, 2, 2, 2)/((RR[i, j] - 
-            1) * (RR[1, j] + RR[i, 1] - 2)))
+        sqrt(var.OR[i, j]/(OR[i, j] - 1)^2 + (var.OR[1, j] + 
+            var.OR[i, 1] + 2 * cov.1(1, 2, 2, 1))/(OR[1, j] + 
+            OR[i, 1] - 2)^2 - 2 * cov.2(2, 2, 2, 2)/((OR[i, j] - 
+            1) * (OR[1, j] + OR[i, 1] - 2)))
     }
     cov.cc <- function(i, j, k, l) {
-        cov.1(i, j, k, l)/((RR[i, 1] + RR[1, j] - 2) * (RR[k, 
-            1] + RR[1, l] - 2)) - ((RR[i, j] - 1) * cov.3(i, 
-            j, k, l))/((RR[i, 1] + RR[1, j] - 2)^2 * (RR[k, 1] + 
-            RR[1, l] - 2)) - ((RR[k, l] - 1) * cov.2(i, j, k, 
-            l))/((RR[i, 1] + RR[1, j] - 2) * (RR[k, 1] + RR[1, 
-            l] - 2)^2) + ((RR[i, j] - 1) * (RR[k, l] - 1) * cov.4(i, 
-            j, k, l))/((RR[i, 1] + RR[1, j] - 2)^2 * (RR[k, 1] + 
-            RR[1, l] - 2)^2)
+        cov.1(i, j, k, l)/((OR[i, 1] + OR[1, j] - 2) * (OR[k, 
+            1] + OR[1, l] - 2)) - ((OR[i, j] - 1) * cov.3(i, 
+            j, k, l))/((OR[i, 1] + OR[1, j] - 2)^2 * (OR[k, 1] + 
+            OR[1, l] - 2)) - ((OR[k, l] - 1) * cov.2(i, j, k, 
+            l))/((OR[i, 1] + OR[1, j] - 2) * (OR[k, 1] + OR[1, 
+            l] - 2)^2) + ((OR[i, j] - 1) * (OR[k, l] - 1) * cov.4(i, 
+            j, k, l))/((OR[i, 1] + OR[1, j] - 2)^2 * (OR[k, 1] + 
+            OR[1, l] - 2)^2)
     }
     cov.cc.2 <- function(i, j, k, l) {
-        var.RR[i, j]/(RR[i, 1] + RR[1, j] - 2)^2 - 2 * ((RR[i, 
-            j] - 1) * cov.2(i, j, k, l))/(RR[i, 1] + RR[1, j] - 
-            2)^3 + ((RR[i, j] - 1)^2 * (var.RR[1, j] + var.RR[i, 
-            1] + 2 * cov.1(1, j, i, 1)))/(RR[i, 1] + RR[1, j] - 
+        var.OR[i, j]/(OR[i, 1] + OR[1, j] - 2)^2 - 2 * ((OR[i, 
+            j] - 1) * cov.2(i, j, k, l))/(OR[i, 1] + OR[1, j] - 
+            2)^3 + ((OR[i, j] - 1)^2 * (var.OR[1, j] + var.OR[i, 
+            1] + 2 * cov.1(1, j, i, 1)))/(OR[i, 1] + OR[1, j] - 
             2)^4
     }
     tab <- table(data)
@@ -75,16 +77,18 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
         stop("Group variable has more than 2 dimensions.")
     bd <- 1/tab[reference[1], reference[2], 1] + 1/tab[reference[1], 
         reference[2], 2]
-    R <- tab[, , reference[3]]/tab[, , c(1, 2)[-reference[3]]]
+    R <- tab[, , reference[3]]/table(data[-group])
     RR <- R/R[reference[1], reference[2]]
     M <- tab[, , 1] + tab[, , 2]
+    O <- tab[, , reference[3]]/tab[, , c(1, 2)[-reference[3]]]
+    OR <- O/O[reference[1], reference[2]]
     dim.i <- dim(tab)[1]
     dim.j <- dim(tab)[2]
-    var.R <- R/M
-    var.RR <- matrix(nrow = dim.i, ncol = dim.j)
+    var.RR <- RR/M
+    var.OR <- matrix(nrow = dim.i, ncol = dim.j)
     for (i in 1:dim.i) {
         for (j in 1:dim.j) {
-            var.RR[i, j] <- variance.RR(i, j, tab)
+            var.OR[i, j] <- variance.OR(i, j, tab)
         }
     }
     cov.vec <- vector()
@@ -109,14 +113,18 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
     dimnames(cov.mat) <- list(seq(1, ((dim.i - 1) * (dim.j - 
         1))), seq(1:((dim.i - 1) * (dim.j - 1))))
     S <- vector(length = (dim.i - 1) * (dim.j - 1))
+    S.cohort <- vector(length = (dim.i - 1) * (dim.j - 1))
     k <- 0
     for (i in 2:dim.i) {
         for (j in 2:dim.j) {
             k <- k + 1
             S[k] <- S.ij(i, j)
+            S.cohort[k] <- S.co(i, j)
         }
     }
     overall.S <- sum(S^3/diag(cov.mat), na.rm = TRUE)/sum(S^2/diag(cov.mat), 
+        na.rm = TRUE)
+    overall.S.cohort <- sum(S.cohort^3/diag(cov.mat), na.rm = TRUE)/sum(S.cohort^2/diag(cov.mat), 
         na.rm = TRUE)
     w <- S^2/diag(cov.mat)
     var.overall.S <- sum(outer(w, w) * cov.mat)/sum(outer(w, 
@@ -145,7 +153,7 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
     if (dim.i == 2 && dim.j == 2) {
         CI.lower <- exp(log(S) - z * se.S(2, 2))
         CI.upper <- exp(log(S) + z * se.S(2, 2))
-        out.matrix.kxl <- rbind(out.matrix.kxl, c(S, se.S(2, 
+        out.matrix.kxl <- rbind(out.matrix.kxl, c(S.cohort, se.S(2, 
             2), CI.lower, CI.upper, plnorm(exp(abs(-log(S))), 
             sd = se.S(2, 2), lower.tail = FALSE)))
         dimnames(out.matrix.kxl) <- list(c("Case/Control", "Cohort"), 
@@ -155,7 +163,7 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
             ") grouped by ", dname[3], "(", reference[3], ")", 
             sep = ""), paste(c("Synergy Index with ", conf.level * 
             100, "% C.I."), collapse = ""))
-        OUT <- list(OddsRatio = RR, measure = out.matrix.kxl)
+        OUT <- list(OddsRatio = OR, measure = out.matrix.kxl)
     }
     else {
         CI.cc.lower <- exp(log(overall.S) - z * se.overall.S)
@@ -180,8 +188,8 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
             reference[1], ") ~ ", dname[2], "(", reference[2], 
             ") grouped by ", dname[3], "(", reference[3], ")", 
             sep = ""), paste(c("Synergy Index with ", conf.level * 
-            100, "% C.I."), collapse = ""))
-        OUT <- list(OddsRatio = RR, covariance = cov.mat, measure = out.matrix.kxl)
+            100, "% C.I. (Case-Control design)"), collapse = ""))
+        OUT <- list(OddsRatio = OR, covariance = cov.mat, measure = out.matrix.kxl)
     }
     OUT
 }

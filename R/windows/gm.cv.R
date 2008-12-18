@@ -1,6 +1,6 @@
 `gm.cv` <-
 function (k, data, outcome = 1, strategy = c("backwards", "forwards"), 
-    chain = FALSE, options = "", conf.level = 0.95) 
+    chain = FALSE, options = "", conf.level = 0.95, show.output = FALSE)
 {
     require(mimR, quietly = TRUE)
     if ((!missing(k) && (length(k) != 1 || is.na(k))) || k < 
@@ -25,6 +25,7 @@ function (k, data, outcome = 1, strategy = c("backwards", "forwards"),
         stop("k must be smaller than number of observations")
     data = data[, c(outcome, c(1:dim(data)[2])[-outcome])]
     var.names = cbind(letters[1:dim(data)[2]], dimnames(data)[2][[1]])
+    dimnames(var.names) <- list(1:dim(var.names)[1], c("MIM","Variable names"))
     if (dim(table(data))[1] != 2) 
         stop("outcome variable 'a' has to be binary.")
     names(data) <- letters[1:length(data)]
@@ -34,11 +35,11 @@ function (k, data, outcome = 1, strategy = c("backwards", "forwards"),
     else if (strategy == "forwards") 
         strategy <- "f"
     RANDOM <- .gm.cv.divide(k, data)
+
     if (chain == FALSE) {
-        SELECTION <- .gm.cv.select(k, RANDOM, data, conf.level = conf.level, 
-            strategy = strategy, option.vector = options)
-    }
-    else {
+        SELECTION <- .gm.cv.select(k, RANDOM, data, conf.level = conf.level,
+            strategy = strategy, option.vector = options, show.output = show.output)
+    } else {
         ch = strsplit(chain, "")[[1]]
         s = unique(ch)
         p1 = which(s == "|")
@@ -54,18 +55,17 @@ function (k, data, outcome = 1, strategy = c("backwards", "forwards"),
         }
         chain = paste(ch, collapse = "")
         SELECTION <- .gm.cv.select.chain(k, RANDOM, data, conf.level = conf.level, 
-            strategy = strategy, option.vector = options, chain = chain)
+            strategy = strategy, option.vector = options, chain = chain, show.output = show.output)
     }
     JUDGE <- .gm.cv.edge(SELECTION$pvalue, k, data)
-    JOINT <- .gm.cv.joint(JUDGE$pvalue, k, RANDOM, data, conf.level = conf.level, 
+    JOINT <- .gm.cv.joint(JUDGE$pvalue, k, RANDOM, data, conf.level = conf.level,
         chain = chain)
     names(dimnames(JOINT$pvalue)) <- list("k-folds", "possible edges")
-    mim.cmd(paste(c("brmodel", dimnames(JOINT$success)[[1]][1]), 
-        collapse = " "), look.nice = FALSE)
+    mim.cmd(paste("brmodel", JOINT$graph, collapse = " "), look.nice = FALSE)
     mim.cmd("gr")
-    JOINT$"variable names" = var.names
-    print(JOINT$success)
-    print(JOINT$statistics)
-    print(JOINT$"variable names")
+    JOINT$variables = var.names
+    cat("\n=================================================================================================\n")
+    print(JOINT[c(6,4,5)])
+    cat("\n================  Graph is printed in MIM  ======================================================\n")
     return(JOINT)
 }

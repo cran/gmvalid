@@ -1,7 +1,7 @@
 \name{gm.or, gm.rr}
 \alias{gm.or}
 \alias{gm.rr}
-\title{ Stratified odds ratios or risk ratios }
+\title{ Stratified odds ratios and risk ratios }
 \description{
   Computes (stratified) odds ratios or risk ratios and their asymptotic confidence interval. 
 }
@@ -15,12 +15,12 @@ gm.rr(X, Y, data = 0, conditions = 0,
 \arguments{
   \item{X}{ Index of the variable's position in \code{data} or a vector. }
   \item{Y}{ Index of the variable's position in \code{data} or a vector. }
-  \item{data}{ Data frame or a table }
-  \item{conditions}{ Variable indices in \code{data} or a data frame of the conditioning variables. }
-  \item{reference}{ Character string specifying the reference category, 
-                    must be one of "last" (default), "biggest" (largest) or "first". 
-                    May be abbreviated. }
-  \item{conf.level}{ confidence level of the interval (default is 0.95). }
+  \item{data}{ Data frame or table }
+  \item{conditions}{ Variable indices in \code{data} or a data frame of the conditional variables. }
+  \item{reference}{ Character string specifying the reference category.
+                    Must be one of "last" (default), "biggest" (largest) or "first",
+                    may be abbreviated. }
+  \item{conf.level}{ Confidence level of the interval (default is 0.95). }
 }
 \details{
   Calculates odds ratios by conditional maximum likelihood estimation (Fisher) for stratified odds ratios and
@@ -34,14 +34,14 @@ gm.rr(X, Y, data = 0, conditions = 0,
 }
 \value{
 
-  A matrix containing the estimate(s), confidence interval(s) and p-value(s).
+  A matrix containing estimate(s), confidence interval(s) and p-value(s).
 }
 \references{ 
+  \url{http://www.epitools.net}
+  
   Rothman KJ, Greenland S (1998) 
   \emph{Modern Epidemiology.} (2nd)
   Lippincott-Raven Publisher
-  
-  \url{http://www.epitools.net}
  }
 \author{ 
   Ronja Foraita, Fabian Sobotka \cr

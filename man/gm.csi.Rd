@@ -3,7 +3,7 @@
 \title{ Conditional Synergy Index }
 \description{
   Computes the conditional synergy index of two dichotomous variables in relation to 
-a binary group variable on the penetrance scale.
+a binary group variable.
 }
 \usage{
 gm.csi(X, Y, group, data=0, reference=c(1,1,2), pen = NULL, conf.level = 0.95)
@@ -12,10 +12,10 @@ gm.csi(X, Y, group, data=0, reference=c(1,1,2), pen = NULL, conf.level = 0.95)
   \item{X}{ Index of the variable's position in \code{data} or a vector. }
   \item{Y}{ Index of the variable's position in \code{data} or a vector. }
   \item{group}{ Binary group or outcome variable addressed as variable index in 
-                \code{data} or as vector. By default, 2 is the reference category.}
+                \code{data} or a vector. By default, 2 is the reference category.}
   \item{data}{ Data frame or table. }
   \item{reference}{ Vector to define the \code{reference} categories of \code{X}, \code{Y} and \code{group}. 
-                    By default, 2 is the reference category for group.}
+                    By default, 2 is the reference category for group and 1 for \code{X} and \code{Y}.}
   \item{pen}{ If FALSE the penetrance P( group | X,Y ) is estimated from the data. }
   \item{conf.level}{ Confidence level of the interval (default is 0.95). }
 }
@@ -25,21 +25,21 @@ gm.csi(X, Y, group, data=0, reference=c(1,1,2), pen = NULL, conf.level = 0.95)
     The index equals 1 under additivity, CSI > 1 in the case of antagonism and 
     CSI < 1 in the presence of synergy.
            
-    The confidence intervals are calculated using an asymptotic variance given in Foraita (2007). 
+    The confidence intervals are calculated using an asymptotic variance given in Foraita (2008). 
 }
 \value{
 A list containing:
-  \item{penetrance}{ a matrix containing the joint penetrance. If pen = NULL, the penetrance will be
-                     estimated from the data.  }
+  \item{penetrance}{ A matrix containing the joint penetrance. If pen = NULL, the penetrance will be
+                     estimated from the data using relative frequencies.  }
         
-  \item{measure}{a matrix containing the estimate, variance, standard error,
+  \item{measure}{A matrix containing the estimate, variance, standard error,
                   confidence interval and p-value. Figures in brackets show the
                   reference category respectively the category under consideration.}
 }
 \references{ 
-Foraita R (2007)
+Foraita R (2008)
 \emph{A conditional synergy index to assess biological interaction.}
-Working Paper. Please send an e-mail to \email{foraita@bips.uni-bremen.de}.
+\url{http://nbn-resolving.de/urn:nbn:de:gbv:46-diss000111139}
  }
 \author{ 
   Ronja Foraita, Fabian Sobotka \cr

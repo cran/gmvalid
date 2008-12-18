@@ -11,9 +11,9 @@
 \format{
   A data frame with 326 observations on the following 3 variables.
   \describe{
-    \item{\code{Defendants.Race}}{a factor with levels \code{white} and \code{black}}
-    \item{\code{Victims.Race}}{a factor with levels \code{white} and \code{black}}
-    \item{\code{Death.Penalty}}{a factor with levels \code{yes} and \code{no}}
+    \item{\code{Defendants.Race}}{A factor with levels \code{white} and \code{black}}
+    \item{\code{Victims.Race}}{A factor with levels \code{white} and \code{black}}
+    \item{\code{Death.Penalty}}{A factor with levels \code{yes} and \code{no}}
   }
 }
 \source{
@@ -22,8 +22,8 @@ American Sociological Review, 46(6):918-927.
 }
 \examples{
 data(dp)
-## Graphical model analysis shows that 'defendants' race' is 
-## independent from 'death penalty' given 'victims' race'.
+## Graphical model analysis shows that 'defendant's race' is 
+## independent from 'death penalty' given 'victim's race'.
 gm.analysis(dp,recursive=TRUE)
 }
 \keyword{datasets}

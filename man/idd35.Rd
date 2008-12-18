@@ -17,7 +17,7 @@
 }
 \details{
  Data was used from Cordell et al. (2001) to model the joint effect of alleles at
- the loci Idd3 and Idd5 on the outcome "type 1 diabetes". Only homozygeous genotypes 
+ loci Idd3 and Idd5 on the outcome "type 1 diabetes". Only homozygeous genotypes 
  were available.
 }
 \source{

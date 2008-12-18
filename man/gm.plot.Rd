@@ -9,9 +9,11 @@ gm.plot(model, significant = TRUE, data.analysis = 0)
 }
 \arguments{
   \item{model}{ String vector with model formulas. See \code{\link{gm.modelsim}}. }
-  \item{significant}{ If TRUE only significant edges in the selected models are plotted (in solid lines). If FALSE also not significant edges are plotted as dashed lines.
+  \item{significant}{ If TRUE only significant edges in the selected models are plotted (in solid lines). 
+                      If FALSE also not significant edges are plotted as dashed lines.
    }
-  \item{data.analysis}{ Upper-tri matrix with the measure for the edge between variables i and j (i>j) at matrix position [i,j]. If the length of the \code{model} is bigger than 1, \code{data.analysis} has to be a list of matrices. }
+  \item{data.analysis}{ Upper-tri matrix of estimates for the edge between variables i and j (i>j) at matrix position [i,j]. 
+                        If the length of the \code{model} is bigger than 1, \code{data.analysis} has to be a list of matrices. }
 }
 \details{
   The line width of the edges will depend on the size of the numbers in \code{data.analysis}.
