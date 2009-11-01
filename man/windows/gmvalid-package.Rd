@@ -20,25 +20,26 @@ using cross validation.
 \tabular{ll}{
 Package: \tab gmvalid\cr
 Type: \tab Package\cr
-Version: \tab 1.2\cr
-Date: \tab 2008-12-18\cr
+Version: \tab 1.21\cr
+Date: \tab 2009-11-01\cr
 License: \tab GPL (>=2) \cr
 }
 
+\itemize{
 \item This package requires the packages grid, epitools, gtools and CoCo.
 \item The package mimR is optional as well as the corresponding software MIM that can be downloaded at \url{http://www.hypergraph.dk}.
 \item The mimR package itself requires the package Rgraphviz that is found in the Bioconductor repository.
 \item Further the packages grid, epitools and gtools are required.
 \item Before using any functions that use MIM make sure that the program is runnning.
 \item The package mimR will only work properly if your R working directory path does not contain hyphens ("-").
-\item For mimR requirements we refer to the package's help page \code{\link[mimR:mimR-package]{mimR}} and its homepage 
+\item For mimR requirements we refer to the package's help page \code{\link[mimR]{mimR}} and its homepage 
       \url{http://gbi.agrsci.dk/~shd/public/mimR/index.html}.
 \item If CoCo calculations fail, please type "endCoCo()" to remove temporary files. 
 \item CoCo crashes occasionally. If you have recurring problems with a specific data set, we suggest to use the MIM-option or to reboot the computer.
 \item Model formulae have to be specified according to MIM model formulas or respectively CoCo model formulae.
 \item To provide a package version that also runs on unix and therefore has no MIM functionalities, we had to put all MIM related examples in
       "Not Run". But for Windows the examples work.
-
+}
 
 }
 \author{
@@ -81,7 +82,7 @@ License: \tab GPL (>=2) \cr
 \keyword{ graphs }
 \keyword{ htest }
 \seealso{
- \code{\link[mimR:mimR-package]{mimR}},  \code{\link[CoCo:CoCo-package]{CoCo}}
+ \code{\link[mimR]{mimR}},  \code{\link[CoCo]{CoCo}}
 }
 \examples{
     ### Generates a data frame given a dependence model

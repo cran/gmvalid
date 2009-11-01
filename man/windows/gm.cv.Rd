@@ -73,7 +73,7 @@ A list containing:
   \item{ statistics }{ Matrix with Sensitivity, Specificity, Precision and Cohen's Kappa measures for the best
                         prediction model.
                         }
-  \item{ variable names } { Matrix that assigns a letter to each variable that is used in the model formulas. }
+  \item{ variable names }{ Matrix that assigns a letter to each variable that is used in the model formulas. }
   
 Additionally the graph of the best prediction model is plotted in MIM.
   

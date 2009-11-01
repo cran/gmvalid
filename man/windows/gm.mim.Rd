@@ -74,7 +74,7 @@ A list containing:
    }
 \note{  The function requires the MIM program.
         Make sure that it is running before using the function. The package mimR will only work properly if your R working directory path 
-        does not contain hyphens ("-"). For mimR requirements we refer to the package's help page \code{\link[mimR:mimR-package]{mimR}} and its homepage 
+        does not contain hyphens ("-"). For mimR requirements we refer to the package's help page \code{\link[mimR]{mimR}} and its homepage 
         \url{http://gbi.agrsci.dk/~shd/public/mimR/index.html}. mimR needs the Rgraphviz package.
         Therefore you will have to add "Bioconductor" to your R repositories.
         

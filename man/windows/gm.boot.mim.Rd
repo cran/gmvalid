@@ -85,7 +85,7 @@ A list containing:
         Make sure that it is running before using the function.\cr 
         The package mimR will only work properly if your R working directory path 
         does not contain hyphens ("-"). For mimR requirements we refer to the package's 
-        help page \code{\link[mimR:mimR-package]{mimR}} and its homepage 
+        help page \code{\link[mimR]{mimR}} and its homepage 
         \url{http://gbi.agrsci.dk/~shd/public/mimR/index.html}. mimR requires the Rgraphviz package. 
         Therefore you need to add "Bioconductor" to your R repositories.\cr
         

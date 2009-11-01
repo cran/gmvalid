@@ -20,16 +20,17 @@ using cross validation.
 \tabular{ll}{
 Package: \tab gmvalid\cr
 Type: \tab Package\cr
-Version: \tab 1.2\cr
-Date: \tab 2008-12-18\cr
+Version: \tab 1.21\cr
+Date: \tab 2009-11-01\cr
 License: \tab GPL (>=2) \cr
 }
 
+\itemize{
 \item This package requires the packages grid, epitools, gtools and CoCo.
 \item If CoCo calculations fail, please type "endCoCo()" to remove temporary files. 
 \item CoCo crashes occasionally. If you have recurring problems with a specific data set, we suggest to reboot the computer.
 \item Model formulae have to be specified according to CoCo model formulae.
-
+}
 
 }
 \author{
