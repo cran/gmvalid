@@ -7,7 +7,6 @@ function (data, strategy = c("backwards", "forwards", "combined"),
     if (!missing(conf.level) && (length(conf.level) != 1 || !is.finite(conf.level) || 
         conf.level < 0 || conf.level > 1)) 
         stop("'conf.level' must be a single number between 0 and 1")
-    require(gtools, quietly = TRUE)
     start.model <- NA
     strategy = match.arg(strategy)
     model.list = list()

@@ -2,7 +2,6 @@
 function (X, Y, group, data = 0, reference = c(1, 1, 2), pen = NULL, 
     conf.level = 0.95) 
 {
-    require(gtools, quietly = TRUE)
     if (!missing(conf.level) && (length(conf.level) != 1 || !is.finite(conf.level) || 
         conf.level < 0 || conf.level > 1)) 
         stop("'conf.level' must be a single number between 0 and 1")
@@ -43,10 +42,10 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), pen = NULL,
     dim.i <- dim(pen)[1]
     dim.j <- dim(pen)[2]
     z <- qnorm(0.5 + 0.5 * conf.level)
-    ifelse(dim.i > 2, combi.i <- combinations(dim.i - 1, dim.i - 
-        2) + 1, combi.i <- FALSE)
-    ifelse(dim.j > 2, combi.j <- combinations(dim.i - 1, dim.i - 
-        2) + 1, combi.j <- FALSE)
+    ifelse(dim.i > 2, combi.i <- t(combn(dim.i - 1, dim.i - 
+        2)) + 1, combi.i <- FALSE)
+    ifelse(dim.j > 2, combi.j <- t(combn(dim.i - 1, dim.i - 
+        2)) + 1, combi.j <- FALSE)
     index <- 0
     for (k in 1:(dim.i - 1)) {
         ifelse(combi.i == FALSE, i <- "", i <- combi.i[k, ])

@@ -13,9 +13,9 @@ gm.coco(data, strategy = c("backwards", "forwards", "eh", "combined"),
 \arguments{
   \item{data}{ Data frame or array. Variables need to be discrete and should have names. }
   \item{strategy}{ Type of model selection. "backwards" eliminates not significant edges, starting from the saturated model as default 
-                    (\code{\link[CoCoRaw]{backward}}).
-                    "forwards" adds significant edges, starting from the main effects model (\code{\link[CoCoRaw]{forward}}). The "eh" ("Edwards-Havranek")
-                    model search rejects complete models in every step and finishes with one or more accepted models (\code{\link[CoCoRaw]{eh}}).
+                    (\code{\link[CoCo]{backward}}).
+                    "forwards" adds significant edges, starting from the main effects model (\code{\link[CoCo]{forward}}). The "eh" ("Edwards-Havranek")
+                    model search rejects complete models in every step and finishes with one or more accepted models (\code{\link[CoCo]{eh}}).
                     The "combined" strategy is a 3 step procedure: \code{\link{gm.screening}}, "backwards" and then "forwards".
                     The default strategy is "backwards". Selections may be abbreviated.
                      }
@@ -26,12 +26,12 @@ gm.coco(data, strategy = c("backwards", "forwards", "eh", "combined"),
                 The model formula has to start with the first lowercase letters of the alphabet, e.g. "abc,cde". Variable names cannot be given.
                 For "combined" the model cannot be given, a start model will be specified by \code{\link{gm.screening}}.
                  }
-  \item{eh.strategy}{ See the strategy option of \code{\link[CoCoRaw]{eh}}.
+  \item{eh.strategy}{ See the strategy option of \code{\link[CoCo]{eh}}.
                      }
   \item{criterion}{ Defines the strategy for edge selection: Likelihood-Ratio (default), AIC or BIC. Selection may be abbreviated.
                    }
   \item{tests}{ If TRUE, all accepted and rejected models are tested against each other. }
-  \item{\dots}{ Additional options for the selection procedure. See \code{\link[CoCoRaw]{backward}} (forward) or \code{\link[CoCoRaw]{eh}}. }
+  \item{\dots}{ Additional options for the selection procedure. See \code{\link[CoCo]{backward}} (forward) or \code{\link[CoCo]{eh}}. }
 }
 \value{
 A list containing:
@@ -61,7 +61,7 @@ A list containing:
         The EH-strategy is very time consuming. This depends on the number of variables, since
         the total number of possible models doubles with each additional variable.
 }
-\seealso{ \code{\link{gm.mim}}, \code{\link[CoCoRaw]{backward}}, \code{\link[CoCoRaw]{eh}}, \code{\link{gm.screening}} }
+\seealso{ \code{\link{gm.mim}}, \code{\link[CoCo]{backward}}, \code{\link[CoCo]{eh}}, \code{\link{gm.screening}} }
 \examples{
   data(wam)
   gm.coco(wam)

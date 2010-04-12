@@ -20,8 +20,8 @@ using cross validation.
 \tabular{ll}{
 Package: \tab gmvalid\cr
 Type: \tab Package\cr
-Version: \tab 1.21\cr
-Date: \tab 2009-11-01\cr
+Version: \tab 1.22\cr
+Date: \tab 2010-04-12\cr
 License: \tab GPL (>=2) \cr
 }
 

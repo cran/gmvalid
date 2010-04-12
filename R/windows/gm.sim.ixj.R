@@ -12,7 +12,7 @@ function (N, pa, pb)
         ifelse(any(is.na(m)) == TRUE, flag <- 1, flag <- 0)
         if (flag == 0) {
             test = data.frame(expand.table(N * m))
-            ifelse(abs(cor(test)[2, 1]) < 0.5, flag <- 1, flag <- 0)
+            ifelse(abs(cor(as.numeric(test[,1]),as.numeric(test[,2]))) < 0.5, flag <- 1, flag <- 0)
         }
     }
     if (length(pa) >= length(pb)) 
@@ -179,7 +179,7 @@ function (pvalue, k, data)
             nrow = 2)
         OUT[i, ] <- elliott.smith[2, order(elliott.smith[1, ])]
     }
-    dimName <- combinations(knodes, 2, letters)
+    dimName <- t(combn(letters[1:knodes], 2))
     dimnames(OUT) <- list(1:k, apply(dimName, 1, together))
     MEAN <- apply(OUT, 2, mean, na.rm = TRUE)
     SE <- apply(OUT, 2, .gm.cv.sd, na.rm = TRUE)
@@ -205,7 +205,7 @@ function (pvalue, k, ds, data, conf.level = 0.95, chain = FALSE)
     gm <- matrix(nrow = k, ncol = 4, dimnames = list(1:k, c("selected model", 
         "number of edges", "success", "block")))
     knodes <- dim(data)[2]
-    dimName <- combinations(knodes, 2, letters)
+    dimName <- t(combn(letters[1:knodes], 2))
     edgeName <- apply(dimName, 1, paste, collapse = "")
     if (chain == FALSE) {
         influences <- paste(letters[2:knodes], collapse = "")
@@ -418,8 +418,8 @@ function (k, ds, data, conf.level = conf.level, strategy = strategy,
             }
             if (length(m[[elliott.smith]]) >= 3) {
                 nr <- choose(length(m[[elliott.smith]]), 2)
-                tmpM <- combinations(length(m[[elliott.smith]]), 
-                  2, m[[elliott.smith]])
+                tmpM <- t(combn(m[[elliott.smith]], 
+                  2))
                 for (k in 1:nr) {
                   tmp <- match(tmpM[k, ], letters)
                   Edges[tmp[1], tmp[2]] <- 1
@@ -524,8 +524,8 @@ function (k, ds, data, conf.level = conf.level, strategy = strategy,
             }
             if (length(m[[elliott.smith]]) >= 3) {
                 nr <- choose(length(m[[elliott.smith]]), 2)
-                tmpM <- combinations(length(m[[elliott.smith]]), 
-                  2, m[[elliott.smith]])
+                tmpM <- t(combn(m[[elliott.smith]], 
+                  2))
                 for (k in 1:nr) {
                   tmp <- match(tmpM[k, ], letters)
                   if (is.na(tmp[1])) 
@@ -564,7 +564,7 @@ function (expr, default = NA, quiet = FALSE)
 `.gm.deleteEdge` <-
 function (data, model, conf.level = 0.95, output = TRUE) 
 {
-    dimName <- combinations(length(model), 2, v = model)
+    dimName <- t(combn(model, 2))
     result <- gm.gamma(data = data[, model], conf.level = conf.level)
     nrows <- seq(1, dim(result)[1])
     kante.weg <- nrows[result[, 5] > 1 - conf.level]

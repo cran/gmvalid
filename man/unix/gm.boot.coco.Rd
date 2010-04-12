@@ -15,8 +15,8 @@ gm.boot.coco(N, data, strategy = c("backwards", "forwards", "combined"),
   \item{N}{ Number of bootstrap replications. }
   \item{data}{ Data frame or array. Variables need to be discrete and should have names. }
   \item{strategy}{ Type of model selection. "backwards" eliminates not significant edges, starting from the saturated model as default 
-                    (\code{\link[CoCoRaw]{backward}}).
-                    "forwards" adds significant edges, starting from the main effects model (\code{\link[CoCoRaw]{forward}}). 
+                    (\code{\link[CoCo]{backward}}).
+                    "forwards" adds significant edges, starting from the main effects model (\code{\link[CoCo]{forward}}). 
                     The "combined" strategy is a 3 step procedure: \code{\link{gm.screening}}, "backwards" and then "forwards".
                     The default strategy is "backwards". Selections may be abbreviated.
                      }
@@ -32,7 +32,7 @@ gm.boot.coco(N, data, strategy = c("backwards", "forwards", "combined"),
                  }
   \item{criterion}{ Defines the strategy for edge selection: Likelihood-Ratio (default), AIC or BIC. Selection may be abbreviated.
                    }
-  \item{\dots}{ Additional options for the selection procedure. See \code{\link[CoCoRaw]{backward}} (forward). }
+  \item{\dots}{ Additional options for the selection procedure. See \code{\link[CoCo]{backward}} (forward). }
 }
 \details{
   This function uses a nonparametric bootstrap.\cr

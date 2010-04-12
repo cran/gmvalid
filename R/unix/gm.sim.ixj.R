@@ -12,7 +12,7 @@ function (N, pa, pb)
         ifelse(any(is.na(m)) == TRUE, flag <- 1, flag <- 0)
         if (flag == 0) {
             test = data.frame(expand.table(N * m))
-            ifelse(abs(cor(test)[2, 1]) < 0.5, flag <- 1, flag <- 0)
+            ifelse(abs(cor(as.numeric(test[,1]),as.numeric(test[,2]))) < 0.5, flag <- 1, flag <- 0)
         }
     }
     if (length(pa) >= length(pb)) 
@@ -138,7 +138,7 @@ function (x)
 `.gm.deleteEdge` <-
 function (data, model, conf.level = 0.95, output = TRUE) 
 {
-    dimName <- combinations(length(model), 2, v = model)
+    dimName <- t(combn(model, 2))
     result <- gm.gamma(data = data[, model], conf.level = conf.level)
     nrows <- seq(1, dim(result)[1])
     kante.weg <- nrows[result[, 5] > 1 - conf.level]

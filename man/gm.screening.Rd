@@ -54,7 +54,7 @@ gm.screening(data, conf.level = 0.95)
   a model after screening based on a backwards and forwards selection
   as implemented in \code{\link{gm.coco}}.
 }
-\seealso{ \code{\link[CoCoRaw]{backward}}, \code{\link{gm.coco}}, \code{\link{gm.chi}}, \code{\link{gm.gamma}} }
+\seealso{ \code{\link[CoCo]{backward}}, \code{\link{gm.coco}}, \code{\link{gm.chi}}, \code{\link{gm.gamma}} }
 \examples{
   data(wam)
   model <- gm.screening(wam)
