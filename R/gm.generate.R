@@ -1,4 +1,4 @@
-`gm.generate` <-
+gm.generate <-
 function (N, p = c(0.5, 0.5, 0.5)) 
 {
     if (any(p < 0) || any(p > 1)) 

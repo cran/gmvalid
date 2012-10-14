@@ -1,4 +1,4 @@
-`gm.modelsim` <-
+gm.modelsim <-
 function (N, model, categories = 0) 
 {
     require(epitools, quietly = TRUE)

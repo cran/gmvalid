@@ -1,4 +1,4 @@
-`gm.coco` <-
+gm.coco <-
 function (data, strategy = c("backwards", "forwards", "eh", "combined"), 
     model = FALSE, eh.strategy = c("smallest", "alternating", 
         "rough"), criterion = c("lr", "aic", "bic"), tests = FALSE, 
@@ -204,7 +204,7 @@ function (data, strategy = c("backwards", "forwards", "eh", "combined"),
     if (tests == TRUE) 
         list(accepted = result.accep, rejected = result.rejec, 
             base = result.base, strategy = strategy, tests = model.tests, 
-            "variable names" = var.names)
+            `variable names` = var.names)
     else list(accepted = result.accep, rejected = result.rejec, 
-        base = result.base, strategy = strategy, "variable names" = var.names)
+        base = result.base, strategy = strategy, `variable names` = var.names)
 }

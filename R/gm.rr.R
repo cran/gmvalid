@@ -1,4 +1,4 @@
-`gm.rr` <-
+gm.rr <-
 function (X, Y, data = 0, conditions = 0, reference = c("last", 
     "biggest", "first"), conf.level = 0.95) 
 {

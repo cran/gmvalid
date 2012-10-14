@@ -1,4 +1,4 @@
-`gm.gms` <-
+gm.gms <-
 function (data, strategy = c("backwards", "forwards", "combined"), 
     model = FALSE, onestep = FALSE, headlong = FALSE, conf.level = 0.95) 
 {
@@ -7,6 +7,7 @@ function (data, strategy = c("backwards", "forwards", "combined"),
     if (!missing(conf.level) && (length(conf.level) != 1 || !is.finite(conf.level) || 
         conf.level < 0 || conf.level > 1)) 
         stop("'conf.level' must be a single number between 0 and 1")
+    require(gtools, quietly = TRUE)
     start.model <- NA
     strategy = match.arg(strategy)
     model.list = list()
@@ -20,7 +21,7 @@ function (data, strategy = c("backwards", "forwards", "combined"),
         model.list <- list(seq(1, dim(data)[2]))
         if (is.na(start.model)) 
             start.model <- model.list
-        OUT <- .gm.gamma.backward(data = data, start.model = start.model, 
+        OUT <- gm.gamma.backward(data = data, start.model = start.model, 
             onestep = onestep, headlong = headlong, conf.level = conf.level)
     }
     else if (strategy == "forwards") {
@@ -28,14 +29,14 @@ function (data, strategy = c("backwards", "forwards", "combined"),
             dim(data)[2]), collapse = ",", sep = ""), ")")))
         if (is.na(start.model)) 
             start.model <- model.list
-        OUT <- .gm.gamma.forward(data = data, start.model = start.model, 
+        OUT <- gm.gamma.forward(data = data, start.model = start.model, 
             onestep = onestep, headlong = headlong, conf.level = conf.level)
     }
     else if (strategy == "combined") {
         model = gm.screening(data, conf.level)
-        OUT <- .gm.gamma.backward(data = data, start.model = model, 
+        OUT <- gm.gamma.backward(data = data, start.model = model, 
             onestep = onestep, headlong = headlong, conf.level = conf.level)
-        OUT <- .gm.gamma.forward(data = data, start.model = OUT$accepted, 
+        OUT <- gm.gamma.forward(data = data, start.model = OUT$accepted, 
             onestep = onestep, headlong = headlong, conf.level = conf.level)
     }
     OUT

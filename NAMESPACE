@@ -1,0 +1,21 @@
+
+export(gm.chi,
+       gm.boot.coco,
+       gm.coco,
+       gm.csi,
+       gm.gamma,
+       gm.generate,
+       gm.gms,
+       gm.modelsim,
+       gm.or,
+       gm.plot,
+       gm.rr,
+       gm.screening,
+       gm.si,
+       gm.analysis,
+       gm.sim.ixj,
+       gm.validation,
+       gm.mim,
+       gm.boot.mim,
+       gm.cv)
+       

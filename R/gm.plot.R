@@ -1,4 +1,4 @@
-`gm.plot` <-
+gm.plot <-
 function (model, significant = TRUE, data.analysis = 0) 
 {
     fontsize = 8
@@ -74,7 +74,7 @@ function (model, significant = TRUE, data.analysis = 0)
                 0.5
             grid.circle(x = x1, y = y1, r = radius, gp = gpar(fill = "white", 
                 col = "black"))
-            .gm.draw.text(label = elements[i], x = c(x1 - 0.01, 
+            gm.draw.text(label = elements[i], x = c(x1 - 0.01, 
                 x1 + 0.01), y = c(y1, y1), xy_null = c(-0.005, 
                 -0.015), color = "black", fontsize = fontsize + 
                 2)
@@ -89,7 +89,7 @@ function (model, significant = TRUE, data.analysis = 0)
             else {
                 l.type = 1
             }
-            result <- .gm.calculate.delta(c(cos(i/circle_factor)/4 + 
+            result <- gm.calculate.delta(c(cos(i/circle_factor)/4 + 
                 0.5, cos(j/circle_factor)/4 + 0.5), c(sin(i/circle_factor)/4 + 
                 0.5, sin(j/circle_factor)/4 + 0.5), radius)
             x <- c(cos(i/circle_factor)/10 * sqrt(dim(dep_table)[1]) + 
@@ -106,15 +106,15 @@ function (model, significant = TRUE, data.analysis = 0)
                 if (dep_table[i, j] != 0 || (!significant && 
                   j > i)) 
                   if (x[1] < x[2]) 
-                    .gm.draw.text(label = data.ana.tmp[i, j], 
+                    gm.draw.text(label = data.ana.tmp[i, j], 
                       x = x, y = y, xy_null = c(result[2] * abs(lwd * 
                         data.ana.tmp[i, j])/50, result[1] * abs(lwd * 
                         data.ana.tmp[i, j])/50), color = "black", 
                       fontsize = fontsize + 2)
-                  else .gm.draw.text(label = data.ana.tmp[i, 
-                    j], x = x, y = y, xy_null = c(result[1] * 
-                    abs(lwd * data.ana.tmp[i, j])/50, result[2] * 
-                    abs(lwd * data.ana.tmp[i, j])/50), color = "black", 
+                  else gm.draw.text(label = data.ana.tmp[i, j], 
+                    x = x, y = y, xy_null = c(result[1] * abs(lwd * 
+                      data.ana.tmp[i, j])/50, result[2] * abs(lwd * 
+                      data.ana.tmp[i, j])/50), color = "black", 
                     alignment = c("right", "bottom"), fontsize = fontsize + 
                       2)
             }

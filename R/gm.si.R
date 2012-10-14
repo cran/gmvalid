@@ -1,4 +1,4 @@
-`gm.si` <-
+gm.si <-
 function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95) 
 {
     require(epitools, quietly = TRUE)
@@ -140,7 +140,7 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
         ci.upp.vec[elliott.smith] <- exp(log(S[elliott.smith]) + 
             z * sqrt(diag(cov.mat)[elliott.smith])/S[elliott.smith])
         pvalue[elliott.smith] <- plnorm(exp(abs(-log(S[elliott.smith]))), 
-            sd = sqrt(diag(cov.mat)[elliott.smith])/S[elliott.smith], 
+            sdlog = sqrt(diag(cov.mat)[elliott.smith])/S[elliott.smith], 
             lower.tail = FALSE)
     }
     out.matrix.kxl <- matrix(nrow = ((dim.i - 1) * (dim.j - 1)), 
@@ -155,7 +155,7 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
         CI.upper <- exp(log(S) + z * se.S(2, 2))
         out.matrix.kxl <- rbind(out.matrix.kxl, c(S.cohort, se.S(2, 
             2), CI.lower, CI.upper, plnorm(exp(abs(-log(S))), 
-            sd = se.S(2, 2), lower.tail = FALSE)))
+            sdlog = se.S(2, 2), lower.tail = FALSE)))
         dimnames(out.matrix.kxl) <- list(c("Case/Control", "Cohort"), 
             c("estimates", "SE", "lower", "upper", "p.value"))
         names(dimnames(out.matrix.kxl)) = c(paste(dname[1], "(", 
@@ -168,7 +168,7 @@ function (X, Y, group, data = 0, reference = c(1, 1, 2), conf.level = 0.95)
     else {
         CI.cc.lower <- exp(log(overall.S) - z * se.overall.S)
         CI.cc.upper <- exp(log(overall.S) + z * se.overall.S)
-        pvalue[length(pvalue) + 1] <- plnorm(overall.S, sd = se.overall.S)
+        pvalue[length(pvalue) + 1] <- plnorm(overall.S, sdlog = se.overall.S)
         row.name <- vector()
         for (i in seq(1, (dim.i - 1))) {
             for (j in seq(1, (dim.j - 1))) {

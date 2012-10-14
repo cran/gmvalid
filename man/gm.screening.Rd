@@ -54,11 +54,15 @@ gm.screening(data, conf.level = 0.95)
   a model after screening based on a backwards and forwards selection
   as implemented in \code{\link{gm.coco}}.
 }
-\seealso{ \code{\link[CoCo]{backward}}, \code{\link{gm.coco}}, \code{\link{gm.chi}}, \code{\link{gm.gamma}} }
+\seealso{ \code{backward} from \pkg{CoCo}, \code{\link{gm.coco}}, \code{\link{gm.chi}}, \code{\link{gm.gamma}} }
 \examples{
   data(wam)
   model <- gm.screening(wam)
+\dontrun{
+## until CoCo is available again ...
   gm.coco(wam,recursive=TRUE,criterion="aic",model=model$model)
+}
+  seleted = gm.gms(wam,model=model$model)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

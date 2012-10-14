@@ -1,4 +1,4 @@
-`gm.screening` <-
+gm.screening <-
 function (data, conf.level = 0.95) 
 {
     if (is.array(data)) {
@@ -74,5 +74,5 @@ function (data, conf.level = 0.95)
             }
         }
     }
-    list(mat = m, model = .gm.modelparse(m))
+    list(mat = m, model = gm.modelparse(m))
 }

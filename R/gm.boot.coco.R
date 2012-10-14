@@ -1,4 +1,4 @@
-`gm.boot.coco` <-
+gm.boot.coco <-
 function (N, data, strategy = c("backwards", "forwards", "combined"), 
     calculations = c("diff", "edge", "clique"), model = FALSE, 
     criterion = c("lr", "aic", "bic"), ...) 
@@ -111,7 +111,7 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
         }
     }
     endCoCo()
-    result = cbind(result.model,result.freq)
+    result = cbind(result.model, result.freq)
     if (length(which(calculations == "clique"))) {
         result.clique = NULL
         for (h in 1:length(result.model)) {
@@ -131,7 +131,7 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
     if (length(which(calculations == "edge"))) {
         dep.table = matrix(0, nrow = dim(data)[2], ncol = dim(data)[2])
         for (k in 1:length(result.model)) {
-            dep.table = dep.table + .gm.matrixparse(result[k, 
+            dep.table = dep.table + gm.matrixparse(result[k, 
                 1]) * as.numeric(result[k, 2])
         }
         dimnames(dep.table) = list(elements, elements)
@@ -164,10 +164,10 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
         m.name = paste(m.name, collapse = ",")
         result.original = m.name
         endCoCo()
-        original = .gm.matrixparse(m.name)
+        original = gm.matrixparse(m.name)
         list.result = list(more = c(NULL), less = c(NULL), abs = c(NULL))
         for (k in 1:length(result.model)) {
-            booted = .gm.matrixparse(result[k, 1])
+            booted = gm.matrixparse(result[k, 1])
             more = as.character(sum((booted - original)[(booted - 
                 original) > 0]))
             less = as.character(sum((original - booted)[(original - 
@@ -207,11 +207,10 @@ function (N, data, strategy = c("backwards", "forwards", "combined"),
     }
     summie = sum(as.numeric(result[, 2]))
     result[, 2] = as.numeric(result[, 2])/summie
-    if(length(result.model) > 1)
-        result = list("bootstrapped models"=result[order(result[,2],
-            decreasing=TRUE),])
-    else
-        result = list("bootstrapped models"=result)
+    if (length(result.model) > 1) 
+        result = list(`bootstrapped models` = result[order(result[, 
+            2], decreasing = TRUE), ])
+    else result = list(`bootstrapped models` = result)
     if (length(which(calculations == "clique"))) 
         result$"bootstrapped cliques" = sort(result.clique/summie, 
             decreasing = TRUE)

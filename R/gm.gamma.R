@@ -1,4 +1,4 @@
-`gm.gamma` <-
+gm.gamma <-
 function (X = 0, Y = 0, data = 0, conditions = 0, type = c("conditional", 
     "single", "marginal"), conf.level = 0.95) 
 {
@@ -34,7 +34,7 @@ function (X = 0, Y = 0, data = 0, conditions = 0, type = c("conditional",
     }
     if (type == "conditional") 
         for (i in 1:(dim(data)[2] - 1)) for (j in (i + 1):dim(data)[2]) {
-            partial.g = .gm.gamma.single(data, i, j, c(1:dim(data)[2])[-c(i, 
+            partial.g = gm.gamma.single(data, i, j, c(1:dim(data)[2])[-c(i, 
                 j)], conf.level)
             result = c(result, partial.g)
             dim(result) = c(5, length(result)/5)
@@ -42,13 +42,13 @@ function (X = 0, Y = 0, data = 0, conditions = 0, type = c("conditional",
         }
     else if (type == "marginal") 
         for (i in 1:(dim(data)[2] - 1)) for (j in (i + 1):dim(data)[2]) {
-            partial.g = .gm.gamma.single(data, i, j, 0, conf.level)
+            partial.g = gm.gamma.single(data, i, j, 0, conf.level)
             result = c(result, partial.g)
             dim(result) = c(5, length(result)/5)
             dname = c(dname, dimnames(partial.g)[[1]])
         }
     else if (type == "single") {
-        result = t(.gm.gamma.single(data, X, Y, conditions, conf.level))
+        result = t(gm.gamma.single(data, X, Y, conditions, conf.level))
         dname = dimnames(result)[[2]]
     }
     result = t(result)

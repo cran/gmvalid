@@ -1,4 +1,4 @@
-`gm.chi` <-
+gm.chi <-
 function (data, X = 1, Y = 2, Z = 3) 
 {
     if (is.array(data)) {
